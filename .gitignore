@@ -39,6 +39,3 @@ nosetests.xml
 .DS_Store
 
 _site/
-
-# The deployment folder goes in the master branch
-deploy

@@ -5,8 +5,8 @@ here = lambda *x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
 LAYOUT_DIR = here('layout')
 CONTENT_DIR = here('content')
 MEDIA_DIR = here('media')
-DEPLOY_DIR = here('deploy')
-TMP_DIR = here('deploy_tmp')
+DEPLOY_DIR = here('..')
+TMP_DIR = here('..', 'deploy_tmp')
 
 BACKUPS_DIR = here('backups')
 BACKUP = False
