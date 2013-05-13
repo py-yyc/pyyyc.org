@@ -2,6 +2,7 @@ import os
 here = lambda *x: os.path.join(os.path.abspath(os.path.dirname(__file__)), *x)
 
 #Directories
+DEVELOPMENT_DIR = here()
 LAYOUT_DIR = here('layout')
 CONTENT_DIR = here('content')
 MEDIA_DIR = here('media')
@@ -15,6 +16,9 @@ SITE_ROOT = "/"
 SITE_WWW_URL = "http://py-yyc.github.com"
 SITE_NAME = "PyYYC"
 SITE_AUTHOR = "Abhin Chhabra"
+
+# The location of the hyde python script
+HYDE_EXECUTABLE = here('..', '..', 'hyde', 'hyde.py')
 
 #URL Configuration
 GENERATE_ABSOLUTE_FS_URLS = False

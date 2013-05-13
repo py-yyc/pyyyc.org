@@ -1,0 +1,10 @@
+CherryPy==3.2.4
+Django==1.5.1
+Fabric==1.6.0
+Markdown==2.3.1
+PyYAML==3.10
+argparse==1.2.1
+cssmin==0.1.4
+paramiko==1.10.1
+pycrypto==2.6
+wsgiref==0.1.2

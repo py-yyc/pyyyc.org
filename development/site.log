@@ -1,0 +1,36 @@
+[12/May/2013:20:30:09] ENGINE Bus STARTING
+[12/May/2013:20:30:09] ENGINE Started monitor thread '_TimeoutMonitor'.
+[12/May/2013:20:30:09] ENGINE Serving on localhost:8080
+[12/May/2013:20:30:09] ENGINE Bus STARTED
+[12/May/2013:20:35:22] ENGINE Keyboard Interrupt: shutting down bus
+[12/May/2013:20:35:22] ENGINE Bus STOPPING
+[12/May/2013:20:35:22] ENGINE HTTP Server cherrypy._cpwsgi_server.CPWSGIServer(('localhost', 8080)) shut down
+[12/May/2013:20:35:22] ENGINE Stopped thread '_TimeoutMonitor'.
+[12/May/2013:20:35:22] ENGINE Bus STOPPED
+[12/May/2013:20:35:22] ENGINE Bus EXITING
+[12/May/2013:20:35:22] ENGINE Bus EXITED
+[12/May/2013:20:35:22] ENGINE Waiting for child threads to terminate...
+[12/May/2013:21:52:06] ENGINE Bus STARTING
+[12/May/2013:21:52:06] ENGINE Started monitor thread '_TimeoutMonitor'.
+[12/May/2013:21:52:07] ENGINE Serving on localhost:8080
+[12/May/2013:21:52:07] ENGINE Bus STARTED
+[12/May/2013:21:52:16] ENGINE Keyboard Interrupt: shutting down bus
+[12/May/2013:21:52:16] ENGINE Bus STOPPING
+[12/May/2013:21:52:21] ENGINE HTTP Server cherrypy._cpwsgi_server.CPWSGIServer(('localhost', 8080)) shut down
+[12/May/2013:21:52:21] ENGINE Stopped thread '_TimeoutMonitor'.
+[12/May/2013:21:52:21] ENGINE Bus STOPPED
+[12/May/2013:21:52:21] ENGINE Bus EXITING
+[12/May/2013:21:52:21] ENGINE Bus EXITED
+[12/May/2013:21:52:21] ENGINE Waiting for child threads to terminate...
+[12/May/2013:21:52:46] ENGINE Bus STARTING
+[12/May/2013:21:52:46] ENGINE Started monitor thread '_TimeoutMonitor'.
+[12/May/2013:21:52:46] ENGINE Serving on localhost:8080
+[12/May/2013:21:52:46] ENGINE Bus STARTED
+[12/May/2013:21:53:35] ENGINE Keyboard Interrupt: shutting down bus
+[12/May/2013:21:53:35] ENGINE Bus STOPPING
+[12/May/2013:21:53:40] ENGINE HTTP Server cherrypy._cpwsgi_server.CPWSGIServer(('localhost', 8080)) shut down
+[12/May/2013:21:53:40] ENGINE Stopped thread '_TimeoutMonitor'.
+[12/May/2013:21:53:40] ENGINE Bus STOPPED
+[12/May/2013:21:53:40] ENGINE Bus EXITING
+[12/May/2013:21:53:40] ENGINE Bus EXITED
+[12/May/2013:21:53:40] ENGINE Waiting for child threads to terminate...
