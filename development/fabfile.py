@@ -13,7 +13,7 @@ def serve():
 	"""
 	Serves the website locally using a cherrypy server provided by hyde.
 	"""
-	local("hyde -w -k -s {here}".format(
+	local("hyde -w -s {here}".format(
 		here=DEVELOPMENT_DIR,
 	))
 
