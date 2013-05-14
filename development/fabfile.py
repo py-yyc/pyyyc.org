@@ -25,4 +25,4 @@ def deploy():
 	with cd('..'):
 		local('git add -A')
 		local('git commit')
-		local('git push')
+		local('git push')		
