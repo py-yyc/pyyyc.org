@@ -18,7 +18,7 @@ SITE_NAME = "PyYYC"
 SITE_AUTHOR = "Abhin Chhabra"
 
 # The location of the hyde python script
-HYDE_EXECUTABLE = here('..', '..', 'hyde', 'hyde.py')
+#HYDE_EXECUTABLE = here('..', '..', 'hyde', 'hyde.py')
 
 #URL Configuration
 GENERATE_ABSOLUTE_FS_URLS = False
