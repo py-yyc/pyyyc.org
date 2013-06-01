@@ -7,7 +7,6 @@ PyYAML==3.10
 Pygments==1.6
 argparse==1.2.1
 cssmin==0.1.4
-distribute==0.6.24
 docopt==0.6.1
 -e git+https://github.com/lakshmivyas/hyde.git@1d6c2fd541ba6dd237175165cf058a03451ffdc5#egg=hyde-dev
 paramiko==1.10.1
