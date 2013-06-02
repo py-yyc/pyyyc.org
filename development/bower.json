@@ -1,0 +1,17 @@
+{
+  "name": "py-yyc.github.com",
+  "version": "0.0.1",
+  "main": "main.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "media/vendor"
+  ],
+  "dependencies": {
+  	"jquery": "2.0.1",
+  	"requirejs": "2.1.6"
+  },
+  "devDependencies": {
+
+  }
+}
