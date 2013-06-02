@@ -1,0 +1,1 @@
+define(function(require,exports,module){var red=require("red"),blue=require('./blue'),message=require('text!./message.txt'); exports.name=red.name+blue.name;exports.path=require.toUrl('./foo.html');exports.message=message;});

@@ -1,0 +1,1 @@
+define(function(require){ var b=require('b');return(a={name:'a',b:b,ids:[],add:function(id){this.ids.push(id);}});});

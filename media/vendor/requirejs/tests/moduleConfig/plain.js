@@ -1,0 +1,1 @@
+define(function(require,exports,module){return{id:'plain'+(module.config().foo||'')}});

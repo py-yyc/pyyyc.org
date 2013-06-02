@@ -1,0 +1,1 @@
+funktion=foo(){return'funky';}

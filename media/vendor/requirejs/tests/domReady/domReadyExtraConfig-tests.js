@@ -1,0 +1,3 @@
+requirejs.config({paths:{domReady:'../../../domReady/domReady'}});
+var finishCounter=0,master=new doh.Deferred();function finished(){finishCounter+=1;if(finishCounter===2){master.callback(true);}}
+doh.register("domReadyExtraConfig",[{name:"domReadyExtraConfig",timeout:3000,runTest:function(){return master;}}]);doh.run();requirejs(['domReady'],finished);require(['domReady!'],finished);require.config({});

@@ -1,0 +1,1 @@
+define(function(require,exports){ var main=require('main');exports.name='helper';});

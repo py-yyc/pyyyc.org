@@ -1,0 +1,1 @@
+define(function(require){doh.register('nestedRelativeRequire',[function nestedRelativeRequire(t){t.is(true,true);}]);doh.run();});
