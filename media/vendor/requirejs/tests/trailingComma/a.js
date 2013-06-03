@@ -1,1 +1,5 @@
-define(function(require){return{name:'a'};});
+define(function (require) {
+    return {
+        name: 'a' 
+    };
+});

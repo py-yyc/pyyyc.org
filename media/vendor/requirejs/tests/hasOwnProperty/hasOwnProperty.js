@@ -1,1 +1,3 @@
-define({name:'hasOwnProperty'});
+define({
+    name: 'hasOwnProperty'
+});

@@ -1,1 +1,3 @@
-define(['myShim'],function(broken){return{name:'c'};});
+define(['myShim'], function (broken) {
+  return { name: 'c' };
+});

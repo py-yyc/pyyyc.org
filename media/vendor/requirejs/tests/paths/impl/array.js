@@ -1,1 +1,6 @@
-define(['./util'],function(util){return{name:'impl/array',utilName:util.name};});
+define(['./util'], function (util) {
+    return {
+        name: 'impl/array',
+        utilName: util.name
+    };
+});

@@ -1,1 +1,6 @@
-define(['./minor'],function(minor){return{name:'another/c',minorName:minor.name};});
+define(['./minor'], function (minor) {
+    return {
+        name: 'another/c',
+        minorName: minor.name
+    };
+});

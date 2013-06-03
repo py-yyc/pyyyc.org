@@ -1,1 +1,3 @@
-define(function(require){require(['./b']);});
+define(function(require) {
+    require(['./b']);
+});

@@ -1,1 +1,3 @@
-define({name:'toString'});
+define({
+    name: 'toString'
+});

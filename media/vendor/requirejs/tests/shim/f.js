@@ -1,1 +1,4 @@
-var FCAP={name:'FCAP',globalA:A};
+var FCAP = {
+    name: 'FCAP',
+    globalA: A
+};

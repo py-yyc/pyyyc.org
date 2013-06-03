@@ -1,1 +1,3 @@
-define(function(require,exports){exports.name='greek';});
+define(function (require, exports) {
+    exports.name = 'greek';
+});

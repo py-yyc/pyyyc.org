@@ -1,1 +1,6 @@
-define(function(require){return{name:'toolbar',template:require('slowText!toolbar.html')};});
+define(function(require) {
+    return {
+        name: 'toolbar',
+        template: require('slowText!toolbar.html')
+    };
+});

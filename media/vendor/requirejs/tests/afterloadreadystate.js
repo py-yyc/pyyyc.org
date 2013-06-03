@@ -1,1 +1,2 @@
-doh.is("complete",document.readyState);d.callback(true);
+doh.is("complete", document.readyState);
+d.callback(true);

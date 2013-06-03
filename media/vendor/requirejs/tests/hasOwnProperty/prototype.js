@@ -1,1 +1,3 @@
-define({name:'prototype'});
+define({
+    name: 'prototype'
+});

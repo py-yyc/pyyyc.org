@@ -9,7 +9,9 @@
   ],
   "dependencies": {
   	"jquery": "2.0.1",
-  	"requirejs": "2.1.6"
+  	"requirejs": "2.1.6",
+  	"mustachejs": "2.1.6",
+    "requirejs-text": "2.0.6"
   },
   "devDependencies": {
 

@@ -1,1 +1,6 @@
-define(function(require){return{name:'baz',foo:require('./foo')};});
+define(function (require) {
+    return {
+        name: 'baz',
+        foo: require('./foo')
+    };
+});

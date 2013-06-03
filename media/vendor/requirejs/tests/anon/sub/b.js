@@ -1,1 +1,3 @@
-define(function(require,exports,module){exports.f=function(){return"sub/b"};});
+define(function(require, exports, module) {   
+   exports.f = function () { return "sub/b" }; 
+});

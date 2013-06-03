@@ -1,1 +1,5 @@
-define(function(require){return{isBrowser:require.isBrowser};});
+define(function (require) {
+    return {
+        isBrowser: require.isBrowser
+    };
+});

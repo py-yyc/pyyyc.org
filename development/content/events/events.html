@@ -1,6 +1,12 @@
-{% extends "_staticpage.html" %}
+{% extends "_dynamicpage.html" %}
 
 {%hyde
-    title: "About"
-    js_main: "events.js"
+    title: "Meetup Events"
+    js_main: "events/index.js"
 %}
+
+{% block dynamic_content %}
+<div id="events-container">
+
+</div>
+{% endblock %}

@@ -1,1 +1,4 @@
-funktion=foo(){return'funky';}
+
+funktion = foo() {
+    return 'funky';
+}

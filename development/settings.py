@@ -74,9 +74,9 @@ MEDIA_PROCESSORS = {
                 'hydeengine.media_processors.TemplateProcessor',
                 'hydeengine.media_processors.HSS',
                 'hydeengine.media_processors.CSSmin',),
-        '.js':(
-                'hydeengine.media_processors.TemplateProcessor',
-                'hydeengine.media_processors.JSmin',),
+        #'.js':(
+        #        'hydeengine.media_processors.TemplateProcessor',
+        #        'hydeengine.media_processors.JSmin',),
         '.coffee':(
                 'hydeengine.media_processors.TemplateProcessor',
                 'hydeengine.media_processors.CoffeeScript',
@@ -129,7 +129,7 @@ YUI_COMPRESSOR = None
 # want to compress JS/CSS. Project homepage:
 # http://closure-compiler.googlecode.com/
 #CLOSURE_COMPILER = "./lib/compiler.jar"
-CLOSURE_COMPRILER = None
+CLOSURE_COMPILER = None
 
 # path for HSS, which is a preprocessor for CSS-like files (*.hss)
 # project page at http://ncannasse.fr/projects/hss
