@@ -11,6 +11,11 @@ define(['jquery'], function($) {
 		self.lat = obj.lat;
 		self.lon = obj.lon;
 		self.name = obj.name;
+
+		self.toString = function() {
+			return self.name + "<br/>" + self.address.join("<br/>") + "<br/>" +
+			[self.city, self.state].join("<br/>");
+		};
 	};
 
 	var Event = function(obj) {
@@ -32,6 +37,20 @@ define(['jquery'], function($) {
 		self.venue = new Venue(obj.venue);
 		self.waitlist_count = obj.waitlist_count;
 		self.yes_rsvp_count = obj.yes_rsvp_count;
+
+		self.time_str = function() {
+			return new Date(self.time).toString();
+		};
+		self.attendance = function() {
+			if (self.rsvp_limit) {
+				if (self.yes_rsvp_count == self.rsvp_limit)
+					return "Full!"
+				else
+					return self.yes_rsvp_count + "/"+ self.rsvp_limit;
+			} else {
+				return self.yes_rsvp_count;
+			}
+		};
 	}
 
 	return {
