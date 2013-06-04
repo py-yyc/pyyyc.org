@@ -119,4 +119,7 @@ ul.breadcrumbs {
     color: rgb(230, 230, 230);
     padding: 1em;
     margin-bottom: 1em;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
 }
