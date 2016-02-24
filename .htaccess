@@ -1,3 +1,7 @@
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L]
+
 # Thanks, http://html5boilerplate.com
 # Techniques in here adapted from all over, including:
 #   Kroc Camen: camendesign.com/.htaccess
