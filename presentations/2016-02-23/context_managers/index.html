@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+
+<title>Context Managers</title>
+
+<meta name="description" content="explain what python context managers are">
+<meta name="author" content="Kurt Neufeld">
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="css/reveal.css">
+<link rel="stylesheet" href="css/theme/moon.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="lib/css/zenburn.css">
+
+<!-- Printing and PDF exports -->
+<script>
+var link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+document.getElementsByTagName( 'head' )[0].appendChild( link );
+</script>
+
+<!--[if lt IE 9]>
+            <script src="lib/js/html5shiv.js"></script>
+            <![endif]-->
+
+
+<style type="text/css">
+.reveal li small { vertical-align: middle; }
+.reveal img { vertical-align: middle; }
+#who_is img { margin-right: 20px; }
+dl { text-align: left; }
+dl dt { text-align: left; }
+dl dd { text-align: left; }
+
+#link_slide a {
+  font-size: 80%;
+  font-family: 'Source Sans Pro';
+}
+
+img {
+  background-color: white !important;
+  text-shadow: none;
+  border: none;
+}
+
+section
+{
+  text-align: left;
+}
+
+.small
+{
+  font-size: 75% !important;
+}
+
+.smallcaps, .caps {
+  font-variant:small-caps !important;
+}
+
+.reveal pre {
+  box-shadow: none;
+  width: 100%;
+}
+
+tt, code, pre {
+  font-family: 'Source Code Pro', monospace !important;
+}
+
+tt {
+  color: #78bae6;
+}
+
+pre > code
+{
+  max-height: none !important;
+}
+
+.aside
+{
+  font-size: 75% !important;
+  opacity: 0.5;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="reveal">
+
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+
+    <section>
+        <h1>Context Managers</h1>
+        <h3>the <tt>with</tt> statement</h3>
+        <small>by <a href="http://www.burgundywall.com">Kurt Neufeld</a></a></small>
+    </section>
+
+    <section>
+        <h2>What is a context manager?</h2>
+        <p class="fragment">An excellent question!</p>
+        <p class="fragment">But first, why <tt>C</tt> sucks</p>
+    </section>
+
+    <section>
+      <h2>Why <tt>C</tt> sucks</h2>
+      <p>There are many reasons why C sucks but they mostly all boil down
+      to the fact that C doesn't have a destructor.</p>
+      <p class="fragment">C++ has destructors and as a result C++ is way better.</p>
+    </section>
+
+    <section>
+      <h2>Destructors</h2>
+      <p>If you're not familiar with destructors, they're a function
+      that is automatically run when a variable goes out of scope and is
+      about to be deleted.</p>
+      <p class="fragment">Even if there is an exception.</p>
+      <p class="fragment">This is a very powerful concept.</p>
+    </section>
+
+    <section>
+      <p>Speaking of powerful concepts, does everybody know what <tt>RAII</tt> is?</p>
+      <dl class="fragment">
+        <dt>RAII</dt>
+        <dd>Resource Acquisition Is Initialization</dd>
+      </dl>
+      <p class="fragment">It's a crap name.</p>
+      <p class="fragment">Mostly a <tt>C++</tt> pattern since C++ is one of the few
+      languages to have a destructor.</p>
+    </section>
+
+    <section>
+        <h2>RAII</h2>
+        <p>So that means...</p>
+        <p class="fragment">an object aquires a resource when created</p>
+        <p class="fragment">then gives it back when deleted</p>
+    </section>
+
+    <section>
+        <h2>RAII</h2>
+        <p>For example...</p>
+        <p class="fragment">create a database connection and then close the connection</p>
+        <p class="fragment">open a file, and then close the file</p>
+    </section>
+
+    <section>
+        <h2>RAII</h2>
+        <p>It boils down to needing to undo something whenever you do something. A <tt>LIFO</tt> queue
+        or <tt>stack</tt> if you're into compsci terms.</p>
+    </section>
+
+    <section>
+        <h2>Naive way of opening a file in C</h2>
+
+        <section data-transition='none'>
+          <pre><code data-trim class="language-cpp">
+FILE* f = fopen("some_file.txt", "r");
+if( f != NULL )
+{
+  // read the file and do stuff
+  fclose(f);
+}
+          </code></pre>
+        </section>
+
+        <section data-transition='none'>
+          <pre><code data-trim class="language-cpp">
+FILE* f = fopen("some_file.txt", "r");
+if( f != NULL )
+{
+  // read the file and do stuff, what if this throws an exception?
+  fclose(f);
+}
+          </code></pre>
+      </section>
+
+      <section data-transition='none'>
+          <pre><code data-trim class="language-cpp">
+FILE* f = fopen("some_file.txt", "r");
+if( f != NULL )
+{
+  // read the file and do stuff, what if this throws an exception?
+  fclose(f); // will this get called?
+}
+          </code></pre>
+      </section>
+
+      <section data-transition='none'>
+          <pre><code data-trim class="language-cpp">
+FILE* f = fopen("some_file.txt", "r");
+if( f != NULL )
+{
+  // read the file and do stuff, what if this throws an exception?
+  fclose(f); // will this get called? No. No it won't.
+}
+          </code></pre>
+      </section>
+
+    </section>
+
+    <section>
+        <h2>Dumbass way of opening a file in Python</h2>
+
+        <pre><code data-trim class="language-python">
+f = open("some_file.txt","r")
+f.read()
+close(f)
+        </code></pre>
+
+      <p class="fragment">It looks a lot like the <tt>C</tt> version.</p>
+    </section>
+    
+    <section>
+        <h2>Slightly less dumbass way of opening a file in Python</h2>
+
+        <pre><code data-trim class="language-python">
+try:
+  f = open("some_file.txt","r")
+  f.read()
+finally:
+  close(f)
+        </code></pre>
+
+      <p class="fragment">This is actually totally safe but verbose
+      and hard to read.</p>
+    </section>
+
+    <section>
+        <h2>Awesome Pythonic way of opening a file</h2>
+
+        <pre><code data-trim class="language-python">
+with open("some_file.txt","r") as f:
+  f.read()
+  # or throw an exception, we don't care
+  # close(f) will get called
+        </code></pre>
+
+        <p class="fragment">this more or less discombobulates to the previous example</p>
+    </section>
+
+    <section>
+        <h2>Lock Example</h2>
+
+        <p>Anybody who's every done multithreaded code knows you need
+        to use locks/mutex/semaphores/critical sections/etc</p>
+
+        <p class="fragment">Hopefully you also know that you have to unlock your mutex
+        when you're done.</p>
+    </section>
+
+    <section>
+        <h2>Lock Example - Lame and unsafe</h2>
+
+        <pre class="fragment"><code data-trim class="language-python">
+from threading import Lock
+mutex = Lock()
+
+mutex.acquire()
+print "is locked: ", mutex.locked()
+mutex.release()
+print "is locked: ", mutex.locked()
+        </code></pre>
+
+        <pre class="fragment"><code data-trim class="text">
+is locked:  True
+is locked:  False
+        </code></pre>
+    </section>
+
+
+    <section>
+        <h2>Lock Example - How the cool kids do it</h2>
+
+        <pre class="fragment"><code data-trim class="language-python">
+from threading import Lock
+mutex = Lock()
+
+with mutex:
+  print "is locked: ", mutex.locked()
+
+print "is locked: ", mutex.locked()
+        </code></pre>
+
+        <pre class="fragment"><code data-trim class="text">
+is locked:  True
+is locked:  False
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>You can write your own custom Context Managers</h2>
+
+        <p class="fragment">Two methods...</p>
+        <ul>
+          <li class="fragment">decorators - for simple cases</li>
+          <li class="fragment">classes - for more advanced cases</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Decorator method</h2>
+
+        <pre><code data-trim class="language-python">
+from contextlib import contextmanager
+
+@contextmanager
+def custom_ctx_mgr(*args, **kwargs):
+  # setup code
+  yield # can return something if desired
+  # cleanup code
+        </code></pre>
+
+    </section>
+
+    <section>
+        <h2>Class method</h2>
+
+        <pre><code data-trim class="language-python">
+class custom_ctx_mgr(object):
+
+    def __init__(self, *args, **kwargs):
+        """
+        this is a normal object and can take initialization parameters
+        """
+
+    def __enter__(self):
+        """
+        the value returned by this method is bound to the `as` variable
+        """
+        return self # or other object or nothing
+
+    def __exit__( self, exc_type, exc_val, exc_traceback):
+        """
+        return True to cause caller to continue happily
+        return False to cause caller to reraise passed in exception
+        """
+        </code></pre>
+
+        <aside class="notes">the most important function here is __exit__ and why I was harping
+        on destructors</aside>
+
+    </section>
+
+    <section>
+        <h2>Invoking a context manager</h2>
+
+        <pre><code data-trim class="language-python">
+with a_ctx_mgr():
+    # do some stuff
+    </code></pre>
+    </section>
+
+    <section>
+        <h2>Invoking a context manager</h2>
+
+        <pre><code data-trim class="language-python">
+with a_ctx_mgr() as var:
+    # do some stuff with var
+        </code></pre>
+
+        <p class="fragment">you can nest them</p>
+
+        <pre class="fragment"><code data-trim class="language-python">
+with a_ctx_mgr() as var:
+    with other_ctx_mgr() as other_var:
+        # do some stuff with var and other_var
+    </code></pre>
+    </section>
+
+    <section>
+        <h2>Invoking a context manager</h2>
+
+        <p>or on the same line</p>
+
+        <pre><code data-trim class="language-python">
+with a_ctx_mgr() as var, with other_ctx_mgr() as other_var:
+    # do some stuff with var and other_var
+    </code></pre>
+    </section>
+
+    <section>
+        <h2>Lets look at some examples</h2>
+    </section>
+
+    <section>
+        <h2>Behold the awesome might of Context Managers!</h2>
+
+        <p class="fragment">function is too big and ugly to fit here</p>
+        <aside class="notes">open ../examples/build_root_fs.py in another window"</aside>
+    </section>
+
+    <section>
+        <h2>Context Managers...</h2>
+
+        <p class="fragment">To know them is to love them.</p>
+        <p class="fragment">To love them is to know them.</p>
+    </section>
+
+    <section>
+        <h2>Questions?</h2>
+    </section>
+
+    </div><!-- slides -->
+
+</div!-- reveal -->
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+
+// Full list of configuration options available at:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+controls: true,
+progress: true,
+history: true,
+center: true,
+
+transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+// Optional reveal.js plugins
+dependencies: [
+{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+{ src: 'plugin/zoom-js/zoom.js', async: true },
+{ src: 'plugin/notes/notes.js', async: true }
+]
+});
+
+</script>
+
+</body>
+</html>

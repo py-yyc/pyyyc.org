@@ -1,0 +1,679 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <title>python decorators</title>
+  <meta name="copyright" content="" />
+  <link rel="stylesheet" type="text/css" media="screen, projection, print" href="slidy.css" />
+  <script src="slidy.js" charset="utf-8" type="text/javascript"></script>
+  <style type="text/css">
+    div.slide
+    {
+      font: 200% helvetica, arial;
+    }
+    h1,h2,h3,h4
+    {
+      text-align: center;
+      font-variant:small-caps;
+    }
+    .small
+    {
+      font-size: 70%;
+      color: #999;
+    }
+
+    .comment
+    {
+      color: red;
+    }
+
+    div.slide
+    {
+      padding-left: 0;
+     max-width: 100%;
+    }
+
+    h1
+    {
+      width:100%;
+      text-align:center;
+      border-bottom: 1px solid #2aa198;
+/*      box-shadow: 0px 2px 10px -2px #b58900; */
+    }
+  </style>
+  <style type="text/css">
+
+@font-face
+{
+      font-family: 'Source Code Pro Regular';
+      src: url('source-code-pro-regular.ttf') format('ttf');
+}
+
+
+pre { font-family: 'source code pro', monospace; font-weight: normal;}
+
+td.linenos { background-color: #f0f0f0; padding-right: 10px; }
+span.lineno { background-color: #f0f0f0; padding: 0 5px 0 5px; }
+pre {  line-height: 125%; padding: 0; border-radius: 5px; border: none; width: 100%; margin: 0; border:0;}
+div.highlight  { padding-left: 10%;background-color: #49483e; width: 90%; border: 0; margin:0;}
+
+/* base03 */
+pre { background-color: #002b36; }
+div.highlight { background-color: #002b36;}
+/* base02 is: #073642 */
+
+/* pre { padding-bottom: 0.1em; margin-bottom: 1px; } */
+pre { padding-bottom: 0.3em; }
+
+tt { font-samily: 'source code pro', monospace; color: #859900; background-color: #002b36; }
+
+.hll { background-color: #ffffcc }
+.c { color: #586e75; font-style: italic } /* Comment */
+.err { color: #dc322f } /* Error */
+.g { color: #839496 } /* Generic */
+.k { color: #859900 } /* Keyword */
+.l { color: #839496 } /* Literal */
+.n { color: #93a1a1 } /* Name */
+.o { color: #839496 } /* Operator */
+.x { color: #839496 } /* Other */
+.p { color: #839496 } /* Punctuation */
+.cm { color: #586e75; font-style: italic } /* Comment.Multiline */
+.cp { color: #586e75; font-style: italic } /* Comment.Preproc */
+.c1 { color: #586e75; font-style: italic } /* Comment.Single */
+.cs { color: #586e75; font-style: italic } /* Comment.Special */
+.gd { color: #839496 } /* Generic.Deleted */
+.ge { color: #839496 } /* Generic.Emph */
+.gr { color: #839496 } /* Generic.Error */
+.gh { color: #839496 } /* Generic.Heading */
+.gi { color: #839496 } /* Generic.Inserted */
+.go { color: #839496 } /* Generic.Output */
+.gp { color: #839496 } /* Generic.Prompt */
+.gs { color: #839496 } /* Generic.Strong */
+.gu { color: #839496 } /* Generic.Subheading */
+.gt { color: #839496 } /* Generic.Traceback */
+.kc { color: #859900 } /* Keyword.Constant */
+.kd { color: #859900 } /* Keyword.Declaration */
+.kn { color: #cb4b16 } /* Keyword.Namespace */
+.kp { color: #cb4b16 } /* Keyword.Pseudo */
+.kr { color: #859900 } /* Keyword.Reserved */
+.kt { color: #859900 } /* Keyword.Type */
+.ld { color: #839496 } /* Literal.Date */
+.m { color: #2aa198 } /* Literal.Number */
+.s { color: #2aa198 } /* Literal.String */
+.na { color: #839496 } /* Name.Attribute */
+.nb { color: #268bd2 } /* Name.Builtin */
+.nc { color: #268bd2 } /* Name.Class */
+.no { color: #b58900 } /* Name.Constant */
+.nd { color: #cb4b16 } /* Name.Decorator */
+.ni { color: #cb4b16 } /* Name.Entity */
+.ne { color: #cb4b16 } /* Name.Exception */
+.nf { color: #268bd2 } /* Name.Function */
+.nl { color: #839496 } /* Name.Label */
+.nn { color: #b58900 } /* Name.Namespace */
+.nx { color: #839496 } /* Name.Other */
+.py { color: #268bd2 } /* Name.Property */
+.nt { color: #859900 } /* Name.Tag */
+.nv { color: #cb4b16 } /* Name.Variable */
+.ow { color: #859900 } /* Operator.Word */
+.w { color: #002b36 } /* Text.Whitespace */
+.mf { color: #2aa198 } /* Literal.Number.Float */
+.mh { color: #2aa198 } /* Literal.Number.Hex */
+.mi { color: #2aa198 } /* Literal.Number.Integer */
+.mo { color: #2aa198 } /* Literal.Number.Oct */
+.sb { color: #2aa198 } /* Literal.String.Backtick */
+.sc { color: #2aa198 } /* Literal.String.Char */
+.sd { color: #2aa198 } /* Literal.String.Doc */
+.s2 { color: #2aa198 } /* Literal.String.Double */
+.se { color: #cb4b16 } /* Literal.String.Escape */
+.sh { color: #2aa198 } /* Literal.String.Heredoc */
+.si { color: #cb4b16 } /* Literal.String.Interpol */
+.sx { color: #2aa198 } /* Literal.String.Other */
+.sr { color: #2aa198 } /* Literal.String.Regex */
+.s1 { color: #2aa198 } /* Literal.String.Single */
+.ss { color: #2aa198 } /* Literal.String.Symbol */
+.bp { color: #268bd2; font-weight: bold } /* Name.Builtin.Pseudo */
+.vc { color: #268bd2 } /* Name.Variable.Class */
+.vg { color: #268bd2 } /* Name.Variable.Global */
+.vi { color: #268bd2 } /* Name.Variable.Instance */
+.il { color: #2aa198 } /* Literal.Number.Integer.Long */
+
+
+
+pre.output {
+background-color: #073642;
+background-color: #000;
+color: #3a3;
+padding-left: 2em; padding-right: -2em;
+}
+
+ul { margin-left: 3em; }
+li { list-style-type: disc !important; }
+li:before { content: (">"); font-size: 50%; }
+  </style>
+</head>
+<body>
+<div class="slide">
+<!-- gathered html -->
+  <h1 style="valign:center;">decorators</h1> <div class="incremental" style="text-align:center;"><img height="350" width="auto" src="avatar-transparent.svg" />   <p>mike warren<br/>https://<span style="color:#c33; font-size: 125%; font-family: 'source code pro' monospace; text-shadow: 1px 1px black;">meejah.ca</span></span></p> </div><!-- /html -->
+
+  <div class="incremental">
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>decorators</h1><!-- /html -->
+
+  <div class="incremental">
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>wild decorators</h1><ul class="incremental">  <li>stdlib: <tt>@classmethod</tt> (<tt>@staticmethod</tt>)</li>  <li>Flask: <tt>@app.route</tt></li>  <li>zope.interface: <tt>@implements</tt></li>  <li>py.test: <tt>@pytest.fixture</tt></li>  <li>Click: <tt>@click.command</tt>, <tt>@click.group</tt></li>  <li>Django: <tt>@login_required</tt>, etc</li></ul><!-- /html -->
+
+  <div class="incremental">
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>decorators</h1><ul class="incremental">  <li>what decorators do</li>  <li>how function decorators work</li>  <li>example: <tt>@memoize</tt></li>  <li>decorators with arguments</li>  <li>example: <tt>@app.route</tt></li>  <li>class decorators</li>  <li>example: <tt>@implements</tt></li>  <li>bonus example: <tt>@contextmanager</tt></li></ul><!-- /html -->
+
+  <div class="incremental">
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>what they do</h1><ul class="incremental">  <li>wrap functions <i class="small">("function decorator")</i></li>  <li>wrap classes <i class="small">("class decorator")</i></li>  <li>syntax sugar: <tt>@</tt></li></ul><!-- /html -->
+
+  <div class="incremental">
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>how decorators work</h1><ul class="incremental">  <li>function &hellip;</li>  <li>&hellip; that accepts a function</li>  <li>&hellip; and returns a function</li></ul><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">fn</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>what they do</h1><ul><li>"marker"-style decorators</li></ul><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="n">fn</span><span class="o">.</span><span class="n">_mike_wuz_here</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">return</span> <span class="n">fn</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>what they do</h1><ul><li>"wrapper"-style decorators</li></ul><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">boldify</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>        <span class="n">r</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>        <span class="k">return</span> <span class="s2">&quot;&lt;b&gt;{}&lt;/b&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">return</span> <span class="n">wrapper</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>what they do</h1><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>  <span class="c1"># &quot;3&quot;</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="n">foo</span> <span class="o">=</span> <span class="n">boldify</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>  <span class="c1"># &quot;&lt;b&gt;3&lt;/b&gt;&quot;</span>
+</pre></div>
+<!--- chunk -->
+<div class="output"><pre class="output">3
+&lt;b&gt;3&lt;/b&gt;
+</pre></div>
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>what they do</h1><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">boldify</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;b&gt;{}&lt;/b&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="nd">@boldify</span>
+<span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+<!--- chunk -->
+<div class="output"><pre class="output">&lt;b&gt;3&lt;/b&gt;
+</pre></div>
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>how decorators work</h1><ul class="incremental">  <li>Fibonacci!</li></ul><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">fib</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">fib</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+<!--- chunk -->
+<div class="output"><pre class="output">2
+55
+</pre></div>
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>how decorators work</h1><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
+
+<span class="nd">@contextmanager</span>
+<span class="k">def</span> <span class="nf">timer</span><span class="p">():</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="n">s</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">yield</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;took {:.6f}s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">s</span><span class="p">))</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">timer</span><span class="p">():</span>
+    <span class="k">pass</span>
+</pre></div>
+<!--- chunk -->
+<div class="output"><pre class="output">took 0.000002s
+</pre></div>
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>how decorators work</h1><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">timer</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;fib(35) =&quot;</span><span class="p">,</span> <span class="n">fib</span><span class="p">(</span><span class="mi">35</span><span class="p">))</span>
+</pre></div>
+<!--- chunk -->
+<div class="output"><pre class="output">fib(35) = 9227465
+took 2.930136s
+</pre></div>
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>how decorators work</h1><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="n">cache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cache</span><span class="p">[</span><span class="n">args</span><span class="p">]</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>            <span class="n">cache</span><span class="p">[</span><span class="n">args</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+            <span class="k">return</span> <span class="n">r</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">return</span> <span class="n">wrapper</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>how decorators work</h1><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">timer</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;fib(35) =&quot;</span><span class="p">,</span> <span class="n">fib</span><span class="p">(</span><span class="mi">35</span><span class="p">))</span>
+<span class="c1"># remember: ~1.6 seconds previously</span>
+</pre></div>
+<!--- chunk -->
+<div class="output"><pre class="output">fib(35) = 9227465
+took 0.000190s
+</pre></div>
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>how decorators work</h1><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">timer</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;fib(100) =&quot;</span><span class="p">,</span> <span class="n">fib</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span>
+<span class="k">with</span> <span class="n">timer</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;fib(200) =&quot;</span><span class="p">,</span> <span class="n">fib</span><span class="p">(</span><span class="mi">200</span><span class="p">))</span>
+</pre></div>
+<!--- chunk -->
+<div class="output"><pre class="output">fib(100) = 354224848179261915075
+took 0.000866s
+fib(200) = 280571172992510140037611932413038677189525
+took 0.000196s
+</pre></div>
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>memoize: questions?</h1><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">memoize</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cache</span><span class="p">[</span><span class="n">args</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">cache</span><span class="p">[</span><span class="n">args</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+            <span class="k">return</span> <span class="n">r</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+<span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>decorators with args</h1><ul class="incremental">  <li>quite useful</li>  <li>e.g. <tt>@app.route("/some/url")</tt></li>  <li>e.g. <tt>@implementer(ISomeInterface)</tt></li>  <li>a function&hellip;</li>  <li>&hellip;that returns a decorator</li>  <li class="small">decorator &rarr; function that takes a function, returns a function</li></ul><!-- /html -->
+
+  <div class="incremental">
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>decorators with args</h1><div style="text-align: center; width: 100%"><img src="tim_and_eric_mind_explosion-90292.gif" width="300" height="199" style="width: 90%; height: auto" /></div><!-- /html -->
+
+  <div class="incremental">
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>decorators with args: Flask</h1><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Flask</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>        <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>            <span class="bp">self</span><span class="o">.</span><span class="n">url_map</span><span class="p">[</span><span class="n">url</span><span class="p">]</span> <span class="o">=</span> <span class="n">fn</span>
+            <span class="k">return</span> <span class="n">fn</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>        <span class="k">return</span> <span class="n">decorator</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">()</span>  <span class="c1"># yuck! globals!</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/foo&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">&quot;Gorgeous HTMLs&quot;</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">url_map</span><span class="p">[</span><span class="s1">&#39;/foo&#39;</span><span class="p">](</span><span class="s2">&quot;fake request object&quot;</span><span class="p">))</span>
+</pre></div>
+<!--- chunk -->
+<div class="output"><pre class="output">Gorgeous HTMLs
+</pre></div>
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>class decorators</h1><ul class="incremental">  <li>decorate classes, not functions</li>  <li>a function taking a <i>class</i>&hellip;</li>  <li>&hellip;that returns a (possibly new) <i>class</i></li>  <li>args work similarly to function decorators</li>  <li>(i.e. returns a class-decorator)</li></ul><!-- /html -->
+
+  <div class="incremental">
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>class decorators</h1><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">implements</span><span class="p">(</span><span class="n">iface</span><span class="p">):</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">decorate</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cls</span><span class="o">.</span><span class="n">_interfaces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">iface</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">cls</span><span class="o">.</span><span class="n">_interfaces</span> <span class="o">=</span> <span class="p">[</span><span class="n">iface</span><span class="p">]</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>        <span class="k">return</span> <span class="n">cls</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">return</span> <span class="n">decorate</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>class decorators</h1><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="nd">@implements</span><span class="p">(</span><span class="s2">&quot;fake interface&quot;</span><span class="p">)</span>
+<span class="nd">@implements</span><span class="p">(</span><span class="s2">&quot;another interface&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">Foo</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;f has interfaces: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">_interfaces</span><span class="p">))</span>
+</pre></div>
+<!--- chunk -->
+<div class="output"><pre class="output">f has interfaces: ['another interface', 'fake interface']
+</pre></div>
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>@contextmanager</h1><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="nd">@contextmanager</span>
+<span class="k">def</span> <span class="nf">a_thing</span><span class="p">():</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;enter&quot;</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">yield</span> <span class="s2">&quot;a thing&quot;</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;exit&quot;</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">a_thing</span><span class="p">()</span> <span class="k">as</span> <span class="n">foo</span><span class="p">:</span>
+   <span class="k">print</span><span class="p">(</span><span class="s2">&quot;inside: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">foo</span><span class="p">))</span>
+</pre></div>
+<!--- chunk -->
+<div class="output"><pre class="output">enter
+inside: a thing
+exit
+</pre></div>
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>@contextmanager</h1><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Helper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gen</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gen</span> <span class="o">=</span> <span class="n">gen</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gen</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>        <span class="k">if</span> <span class="nb">type</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gen</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                <span class="k">return</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_gen</span><span class="o">.</span><span class="n">throw</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>@contextmanager</h1><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">contextmanager</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>        <span class="k">return</span> <span class="n">Helper</span><span class="p">(</span><span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="nd">@contextmanager</span>
+<span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;hi&quot;</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="s2">&quot;a thing&quot;</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;bye&quot;</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">foo</span><span class="p">()</span> <span class="k">as</span> <span class="n">x</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;inside:&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="output"><pre class="output">hi
+inside: a thing
+bye
+</pre></div>
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>thanks</h1><div style="text-align: center"><p>thanks for your attention<br/><br/><br/><br/>questions?</p><img height="350" width="auto" src="avatar-transparent.svg" /><br/><br/>@meejah<br/>github.com/meejah<br/>https://<span style="color:#c33; font-size: 125%; font-family: 'source code pro' monospace; text-shadow: 1px 1px black;">meejah.ca</span></span></p></div>;<!-- /html -->
+
+  <div class="incremental">
+  </div>
+</div>
+
+
+</body>
+</html>
