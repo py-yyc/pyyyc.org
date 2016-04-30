@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <title>Selenium with pytest</title>
+  <meta name="copyright" content="" />
+  <link rel="stylesheet" type="text/css" media="screen, projection, print" href="slidy.css" />
+  <script src="slidy.js" charset="utf-8" type="text/javascript"></script>
+  <style type="text/css">
+    div.slide
+    {
+      font: 200% helvetica, arial;
+    }
+    h1,h2,h3,h4
+    {
+      text-align: center;
+      font-variant:small-caps;
+    }
+    .small
+    {
+      font-size: 70%;
+      color: #999;
+    }
+
+    .comment
+    {
+      color: red;
+    }
+
+    div.slide
+    {
+      padding-left: 0;
+     max-width: 100%;
+    }
+
+    h1
+    {
+      width:100%;
+      text-align:center;
+      border-bottom: 1px solid #2aa198;
+/*      box-shadow: 0px 2px 10px -2px #b58900; */
+    }
+  </style>
+  <style type="text/css">
+
+@font-face
+{
+      font-family: 'Source Code Pro Regular';
+      src: url('source-code-pro-regular.ttf') format('ttf');
+}
+
+
+pre { font-family: 'source code pro', monospace; font-weight: normal;}
+
+td.linenos { background-color: #f0f0f0; padding-right: 10px; }
+span.lineno { background-color: #f0f0f0; padding: 0 5px 0 5px; }
+pre {  line-height: 125%; padding: 0; border-radius: 5px; border: none; width: 100%; margin: 0; border:0;}
+div.highlight  { padding-left: 10%;background-color: #49483e; width: 90%; border: 0; margin:0;}
+
+/* base03 */
+pre { background-color: #002b36; }
+div.highlight { background-color: #002b36;}
+/* base02 is: #073642 */
+tt { font-samily: 'source code pro', monospace; color: #859900; background-color: #002b36; }
+
+/* solarized light; base2 */
+div.highlight { background-color: #eee8d5;; !important; }
+pre { background-color: #eee8d5;; !important; }
+tt { font-samily: 'source code pro', monospace; color: #859900; background-color: #eee8d5; }
+
+
+/* pre { padding-bottom: 0.1em; margin-bottom: 1px; } */
+pre { padding-bottom: 0.3em; }
+
+.hll { background-color: #ffffcc }
+.c { color: #586e75; font-style: italic } /* Comment */
+.err { color: #dc322f } /* Error */
+.g { color: #839496 } /* Generic */
+.k { color: #859900 } /* Keyword */
+.l { color: #839496 } /* Literal */
+.n { color: #93a1a1 } /* Name */
+.o { color: #839496 } /* Operator */
+.x { color: #839496 } /* Other */
+.p { color: #839496 } /* Punctuation */
+.cm { color: #586e75; font-style: italic } /* Comment.Multiline */
+.cp { color: #586e75; font-style: italic } /* Comment.Preproc */
+.c1 { color: #586e75; font-style: italic } /* Comment.Single */
+.cs { color: #586e75; font-style: italic } /* Comment.Special */
+.gd { color: #839496 } /* Generic.Deleted */
+.ge { color: #839496 } /* Generic.Emph */
+.gr { color: #839496 } /* Generic.Error */
+.gh { color: #839496 } /* Generic.Heading */
+.gi { color: #839496 } /* Generic.Inserted */
+.go { color: #839496 } /* Generic.Output */
+.gp { color: #839496 } /* Generic.Prompt */
+.gs { color: #839496 } /* Generic.Strong */
+.gu { color: #839496 } /* Generic.Subheading */
+.gt { color: #839496 } /* Generic.Traceback */
+.kc { color: #859900 } /* Keyword.Constant */
+.kd { color: #859900 } /* Keyword.Declaration */
+.kn { color: #cb4b16 } /* Keyword.Namespace */
+.kp { color: #cb4b16 } /* Keyword.Pseudo */
+.kr { color: #859900 } /* Keyword.Reserved */
+.kt { color: #859900 } /* Keyword.Type */
+.ld { color: #839496 } /* Literal.Date */
+.m { color: #2aa198 } /* Literal.Number */
+.s { color: #2aa198 } /* Literal.String */
+.na { color: #839496 } /* Name.Attribute */
+.nb { color: #268bd2 } /* Name.Builtin */
+.nc { color: #268bd2 } /* Name.Class */
+.no { color: #b58900 } /* Name.Constant */
+.nd { color: #cb4b16 } /* Name.Decorator */
+.ni { color: #cb4b16 } /* Name.Entity */
+.ne { color: #cb4b16 } /* Name.Exception */
+.nf { color: #268bd2 } /* Name.Function */
+.nl { color: #839496 } /* Name.Label */
+.nn { color: #b58900 } /* Name.Namespace */
+.nx { color: #839496 } /* Name.Other */
+.py { color: #268bd2 } /* Name.Property */
+.nt { color: #859900 } /* Name.Tag */
+.nv { color: #cb4b16 } /* Name.Variable */
+.ow { color: #859900 } /* Operator.Word */
+.w { color: #002b36 } /* Text.Whitespace */
+.mf { color: #2aa198 } /* Literal.Number.Float */
+.mh { color: #2aa198 } /* Literal.Number.Hex */
+.mi { color: #2aa198 } /* Literal.Number.Integer */
+.mo { color: #2aa198 } /* Literal.Number.Oct */
+.sb { color: #2aa198 } /* Literal.String.Backtick */
+.sc { color: #2aa198 } /* Literal.String.Char */
+.sd { color: #2aa198 } /* Literal.String.Doc */
+.s2 { color: #2aa198 } /* Literal.String.Double */
+.se { color: #cb4b16 } /* Literal.String.Escape */
+.sh { color: #2aa198 } /* Literal.String.Heredoc */
+.si { color: #cb4b16 } /* Literal.String.Interpol */
+.sx { color: #2aa198 } /* Literal.String.Other */
+.sr { color: #2aa198 } /* Literal.String.Regex */
+.s1 { color: #2aa198 } /* Literal.String.Single */
+.ss { color: #2aa198 } /* Literal.String.Symbol */
+.bp { color: #268bd2; font-weight: bold } /* Name.Builtin.Pseudo */
+.vc { color: #268bd2 } /* Name.Variable.Class */
+.vg { color: #268bd2 } /* Name.Variable.Global */
+.vi { color: #268bd2 } /* Name.Variable.Instance */
+.il { color: #2aa198 } /* Literal.Number.Integer.Long */
+
+
+
+pre.output {
+background-color: #073642;
+background-color: #000;
+color: #3a3;
+padding-left: 2em; padding-right: -2em;
+}
+
+ul { margin-left: 3em; }
+li { list-style-type: disc !important; }
+li:before { content: (">"); font-size: 50%; }
+  </style>
+</head>
+<body>
+<div class="slide">
+<!-- gathered html -->
+<p>If you want to play along with the demos, do this:</p><ul>  <li><tt>git clone https://github.com/py-yyc/pytest-selenium</tt></li>  <li><tt>cd pytest-selenium</tt></li>  <li><tt>virtualenv venv</tt></li>  <li><tt>source venv/bin/activate</tt></li>  <li><tt>pip install -r project/requirements.txt</tt></li></ul><p>Confirm you have both Firefox and Chrome installed. Confirm that <tt>chromedriver</tt> is in your <tt>PATH</tt> (typing <tt>which chromedriver</tt> in a Terminal will tell you if so).</p><ul>  <li><tt>https://sites.google.com/a/chromium.org/chromedriver/downloads</tt></li>  <li><tt>google.com/chrome</tt></li>  <li><tt>getfirefox.com</tt></li></ul><!-- /html -->
+
+  <div class="incremental">
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+  <h1 style="valign:center;">py.test &amp; Selenium</h1> <div class="incremental" style="text-align:center;"><img height="350" width="auto" src="avatar-transparent.svg" />   <p>mike warren<br/><span class="small"><i>aka</i> meejah<br/>https://<span style="color:#c33; font-size: 125%; font-family: 'source code pro' monospace; text-shadow: 1px 1px black;">meejah.ca</span></span></p> </div><!-- /html -->
+
+  <div class="incremental">
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+  <h1 style="valign:center;"><span style="color:#002b36;">py.test &amp;</span> Selenium</h1><ul class="incremental">  <li>framework for controller browsers</li>  <li>API drives "real" browser instance</li>  <li>Firefox, Chrome, etc. <span style="color:#eee8d5;" class="small">(even The Browser That Shall Not Be Named)</span></li>  <li>Can only do what a user can</li>  <li>Useful for testing <span class="small">but other things too</span></li></ul><!-- /html -->
+
+  <div class="incremental">
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+  <h1 style="valign:center;"><span style="color:#002b36;">py.test &amp;</span> Selenium</h1><ul class="incremental"></ul><!-- /html -->
+
+  <div class="incremental">
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+  <h1 style="valign:center;">py.test <span style="color:#002b36;">&amp; Selenium</span></h1><ul class="incremental">  <li>test runner <b>and</b> API</li>  <li><code>@fixture</code>s!</li>  <li>clean, flexible style</li>  <li>plugin/hook API for <i>everything</i></li>  <li>bare <code>assert</code>s</li></ul><!-- /html -->
+
+  <div class="incremental">
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">selenium.webdriver</span> <span class="kn">import</span> <span class="n">Firefox</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="n">driver</span> <span class="o">=</span> <span class="n">Firefox</span><span class="p">()</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://github.com&#39;</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="n">search_box</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="n">search_box</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s1">&#39;txtorcon&#39;</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="n">search_box</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="n">found_repos</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_elements_by_class_name</span><span class="p">(</span>
+    <span class="s1">&#39;repo-list-name&#39;</span>
+<span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="n">repo_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">div</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">div</span> <span class="ow">in</span> <span class="n">found_repos</span><span class="p">]</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="k">assert</span> <span class="s1">&#39;meejah/txtorcon&#39;</span> <span class="ow">in</span> <span class="n">repo_names</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver</span> <span class="kn">import</span> <span class="n">Firefox</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="nd">@pytest.fixture</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">driver</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">Firefox</span><span class="p">()</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_github_search</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
+    <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://github.com&#39;</span><span class="p">)</span>
+    <span class="n">search_box</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s1">&#39;q&#39;</span><span class="p">)</span>
+    <span class="n">search_box</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s1">&#39;txtorcon&#39;</span><span class="p">)</span>
+    <span class="n">search_box</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="n">found_repos</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">repo</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">repo</span> <span class="ow">in</span>
+        <span class="n">driver</span><span class="o">.</span><span class="n">find_elements_by_class_name</span><span class="p">(</span><span class="s1">&#39;repo-list-name&#39;</span><span class="p">)</span>
+    <span class="p">]</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span></span>    <span class="k">assert</span> <span class="s1">&#39;meejah/txtorcon&#39;</span> <span class="ow">in</span> <span class="n">found_repos</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1 style="valign:center;">Demo</h1><ul class="incremental">  <li><tt>test_fixturedemo[012].py, test_github.py, conftest.py</tt></li>  <li>Funtimes command-line options: <span class="incremental"><tt>-v</tt><span>, <tt>-s</tt></span></span></li>  <li><tt>@fixture</tt>: <span class="incremental">cleanup, <span>scoping, </span><span>combinations</span></span></li>  <li>Parametrizing: <span class="incremental">fixtures vs <span>tests</span></span></li>  <li>pytest API/plugins and customization</li>  <li><tt>conftest.py</tt></li>  <li>ProTips&trade;: <span class="incremental">layout, <span>use <tt>id</tt>s, </span><span>remote drivers, </span><span>CI/headless concerns</span></li></ul><!-- /html -->
+
+  <div class="incremental">
+  </div>
+</div>
+
+
+</body>
+</html>

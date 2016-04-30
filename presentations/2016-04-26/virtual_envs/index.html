@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+
+<title>Virtual Environments</title>
+
+<meta name="description" content="explain what python virtual environments are">
+<meta name="author" content="Kurt Neufeld">
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="css/reveal.css">
+<link rel="stylesheet" href="css/theme/white.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="lib/css/vs.css">
+
+<!-- Printing and PDF exports -->
+<script>
+var link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+document.getElementsByTagName( 'head' )[0].appendChild( link );
+</script>
+
+<!--[if lt IE 9]>
+            <script src="lib/js/html5shiv.js"></script>
+            <![endif]-->
+
+
+<style type="text/css">
+
+.reveal li small { vertical-align: middle; }
+
+dl { text-align: left; }
+dl dt { text-align: left; }
+dl dd { text-align: left; }
+
+#link_slide a {
+  font-size: 80%;
+  font-family: 'Source Sans Pro';
+}
+
+.reveal img {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  border: none !important;
+  vertical-align: middle;
+  margin: 0px;
+}
+
+section
+{
+  text-align: left;
+}
+
+.small
+{
+  font-size: 75% !important;
+}
+
+.smallcaps, .caps {
+  font-variant:small-caps !important;
+}
+
+.reveal pre {
+  box-shadow: none;
+  width: 100%;
+}
+
+.reveal pre code {
+    /* background: #cdf; */
+    background: white;
+    color: #3f3f3f;
+    border: solid black 1px;
+    padding: 1em;
+    box-shadow: none;
+}
+
+tt, code, pre {
+  font-family: 'Source Code Pro', monospace !important;
+}
+
+tt {
+  color: #78bae6;
+}
+
+pre > code {
+  max-height: none !important;
+}
+
+.aside {
+  font-size: 75% !important;
+  opacity: 0.5;
+}
+
+#title_slide h3 {
+  font-style: italic;
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+<div class="reveal">
+
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+
+    <section id="title_slide">
+        <h1>Virtual Environments</h1>
+        <h3>don't pollute</h3>
+        <p style="font-size: 75%">
+        by <a href="http://www.burgundywall.com">Kurt Neufeld</a><br/>
+          <img src="images/twitter-128.png" style="margin-right: 5px; width: 25px; align: top">@kneufeld
+        </p>
+    </section>
+
+    <section>
+        <h2>What is a virtual environment?</h2>
+        <h2 class="fragment">what is a regular environment?</h2>
+    </section>
+
+    <section>
+      <h2>The Python Environment</h2>
+      <p class="fragment">When you run a python application there's more
+      than just one file involved. There's lots of files involved.</p>
+      <ul>
+        <li class="fragment">there's <tt>/usr/bin/python</tt></li>
+        <li class="fragment">there's your application</li>
+        <li class="fragment">and most importantly for this talk...</li>
+        <li class="fragment">there are the dependencies</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Javascript Sucks</h2>
+      <p class="fragment">Who here heard about the whole <tt>leftpad</tt>
+      fiasco the other week?</p>
+      <p class="fragment">Basically it was dependencies run amok</p>
+    </section>
+
+    <section>
+      <h2>Python Doesn't Suck</h2>
+      <p class="fragment">Now I'm not saying that <tt>leftpad</tt> could never happen in the
+      Python community but so far it hasn't and that makes us better.</p>
+      <p class="fragment">We do have the potential for lots of dependencies though.</p>
+      <p class="fragment">PyPI has roughly 75,000 projects in it.</p>
+    </section>
+
+    <section>
+        <h2>Dependencies</h2>
+        <p class="fragment">So lets say you have an older web app that runs Django 1.4
+        and it uses some package Foo, version 1.2</p>
+        <p class="fragment">But now you want to make the Greatest Thing Ever	&trade;
+        and it clearly needs the latest version of Django
+        <span class="fragment">1.9.5</span></p>
+        <p class="fragment">But Django 1.9.5 needs Foo version 2.3!</p>
+        <p class="fragment">But Foo 2.3 doesn't work with Django 1.4!</p>
+        <p class="fragment">I guess you won't be able to make the Greatest Thing Ever &trade;
+        and now you'll have to live a life of poverty in your parents basement.</p>
+    </section>
+
+    <section>
+        <h2>What were we talking about again?</h2>
+        <p class="fragment">Oh yeah, virtual environments.</p>
+        <p class="fragment">Since the regular environment is clearly a one way trip
+        to poverty in your parents basement it's now time to live long and prosper
+        with virtual environments!</p>
+    </section>
+
+    <section>
+        <h2>Virtual Environments</h2>
+        <p class="fragment">Basically, a virtual environment is nothing more than a
+        copy of the python executable and some path munging.</p>
+        <p class="fragment">But what sweet path munging it is.</p>
+    </section>
+
+    <section>
+        <h2>Prep Work</h2>
+
+        <pre><code data-trim class="bash">
+easy_install pip # if required
+pip install virtualenv
+
+# you may want to install virtualenv from your distro but it will
+# probably be an older version
+
+# osx: brew install python-virtualenv
+# debian/ubuntu: apt-get install python-virtualenv
+# redhat family: yum install python-virtualenv
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Construction</h2>
+
+        <pre><code data-trim class="bash">
+cd ~/src/project
+virtualenv venv # by convention, usually named venv
+source venv/bin/activate
+which pip
+which python
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Environment</h2>
+
+        <pre><code data-trim class="bash">
+pip install django
+pip install -r requirements.txt
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>requirements.txt</h2>
+
+        <p>simply a list of packages and their versions</p>
+
+        <pre class="fragment"><code data-trim class="bash">
+Django==1.6.4
+Fabric==1.4.3
+MySQL-python==1.2.5
+Werkzeug==0.8.3
+celery==3.1.12
+django-celery==3.1.10
+django-debug-toolbar==1.2
+django-extensions==1.1.1
+django-tastypie==0.12.1
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Destruction</h2>
+
+        <pre><code data-trim class="bash">
+deactivate
+rm ~/src/project/venv
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Virtual Environment Cons</h2>
+
+        <p class="fragment">The activate/deactivate dance is both
+        annoying and error prone, especially if you work on lots of
+        different projects at the same time.</p>
+
+        <p class="fragment">You also have virtual environments scattered
+        all over the place.</p>
+
+        <p class="fragment">But there's a solution to this, more abstraction!</p>
+    </section>
+
+    <section>
+        <h2>Virtual Environment Wrapper</h2>
+
+        <p>salient points from website...</p>
+
+        <ul>
+          <li class="fragment">organize all your virtenvs in one place eg. <tt>~/.virtualenvs</tt></li>
+          <li class="fragment">Wrappers for managing your virtual environments (create, delete,
+            copy).</li>
+          <li class="fragment">Use a single command to switch between environments.</li>
+          <li class="fragment">Tab completion for commands that take a virtual environment as
+            argument.</li>
+          <li class="fragment">User-configurable hooks for all operations</li>
+          <li class="fragment">Plugin system for more creating sharable extensions </li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Virtual Environment Wrapper</h2>
+
+        <p class="fragment">I only care about the first point because I have a better workflow.</p>
+
+        <p class="fragment">Class participation time, everybody get their laptops out because
+        I'm going to show you how to automatically activate/deactivate a virtual environment.</p>
+    </section>
+
+    <section>
+        <h2>Auto VENV</h2>
+
+        <p><a href="https://goo.gl/g6DdtJ">https://goo.gl/g6DdtJ</a></p>
+
+        <p>https://www.burgundywall.com/post/automatically-activate-virtualenv</p>
+
+        <p>or just goto burgundywall.com and search for 'venv'</p>
+    </section>
+
+    <section>
+        <h2>Auto VENV</h2>
+
+        <ul>
+          <li class="fragment">install virtualenv and virtualenvwrapper</li>
+          <li class="fragment">mkdir ~/.virtualenvs</li>
+          <li class="fragment">copy the bash function into your .bashrc</li>
+          <li class="fragment">source .bashrc</li>
+          <li class="fragment">mkdir ~/src/project_name</li>
+          <li class="fragment">touch ~/src/project_name/.venv</li>
+          <li class="fragment">mkvirtualenv project_name</li>
+          <li class="fragment">deactivate</li>
+          <li class="fragment">cd ~/src/project_name</li>
+          <li class="fragment">cd ..</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Auto VENV</h2>
+        <p>add the following to .bashrc too</p>
+        <p>it might not work exactly as typed</p>
+
+        <pre class="fragment"><code data-trim class="bash">
+export PS1="[\u@\h \[\e[1;34m\]\w\[\e[0m\]]\n\\$ "
+export PROMPT_COMMAND=prompt_command_collection
+        </code></pre>
+
+        <pre class="fragment"><code data-trim class="bash">
+function prompt_command_collection() {
+    printf "\033]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/~}"
+
+    handle_virtualenv
+    export PS1="[\u@\h \[\e[1;34m\]\w\[\e[0m\]${venv_ps1}" "]\n\\\$ "
+}
+        </code></pre>
+
+    </section>
+
+
+
+    <section>
+        <h2>ProTips &trade;</h2>
+
+        <ul>
+          <li class="fragment">don't need to install as root (or use sudo)</li>
+          <li class="fragment">python doesn't have to be cpython, it can be pypy</li>
+          <li class="fragment">don't use virtualenv, use virtualenvwrapper</li>
+          <li class="fragment">better than autoenv since the virtenv is deactivated</li>
+          <li class="fragment">the only allowed global installs are:</li>
+            <ul>
+              <li class="fragment">pip</li>
+              <li class="fragment">ipython</li>
+              <li class="fragment">virtualenv &amp; virtualenvwrapper</li>
+            </ul>
+        </ul>
+    </section>
+
+    <section>
+        <h2>ProTips &trade;</h2>
+
+        <ul>
+          <li class="fragment">if you want to use a virtenv from an alias/script/cron/etc then
+            provide the full path to python
+        <pre class="fragment"><code data-trim class="bash">
+alias fab="/home/kneufeld/.virtualenvs/fabric/bin/fab"</code></pre></li>
+        <pre class="fragment"><code data-trim class="bash">
+# from a script
+/home/kneufeld/.virtualenvs/project/bin/python \
+/home/kneufeld/src/project/app.py</code></pre></li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>ProTips &trade;</h2>
+
+        <p><tt>.venv</tt> can be a bit fancy</p>
+
+        <pre class="fragment"><code data-trim class="bash">
+if [ `uname -o` == "Darwin" ]; then
+	VENV='project_name'
+else
+	VDIR=`pwd`/virt
+fi
+        </code></pre>
+
+        <p class="fragment"><tt>VDIR</tt> takes precendence over <tt>VENV</tt></p>
+        <p class="fragment"><tt>VENV</tt> is current directory by default</p>
+
+    </section>
+
+    <section>
+        <h2>Note</h2>
+
+        <p>In Python 3.5 there is <tt>pyenv</tt> which is more baked in
+        but I haven't used it so can't speak to it.</p>
+
+    </section>
+
+    <section>
+        <h2>Questions?</h2>
+        <p class="fragment">thanks for listening</p>
+    </section>
+
+    </div><!-- slides -->
+
+</div!-- reveal -->
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+
+// Full list of configuration options available at:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+controls: false,
+progress: true,
+history: true,
+center: true,
+
+transition: 'none', // none/fade/slide/convex/concave/zoom
+
+// Optional reveal.js plugins
+dependencies: [
+{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+{ src: 'plugin/zoom-js/zoom.js', async: true },
+{ src: 'plugin/notes/notes.js', async: true }
+]
+});
+
+</script>
+
+</body>
+</html>
