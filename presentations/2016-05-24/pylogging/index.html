@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+
+<title>Logging</title>
+
+<meta name="description" content="explore logging with an emphasis on python">
+<meta name="author" content="Kurt Neufeld">
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="css/reveal.css">
+<link rel="stylesheet" href="css/theme/serif.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="lib/css/vs.css">
+
+<!-- Printing and PDF exports -->
+<script>
+var link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+document.getElementsByTagName( 'head' )[0].appendChild( link );
+</script>
+
+<!--[if lt IE 9]>
+            <script src="lib/js/html5shiv.js"></script>
+            <![endif]-->
+
+
+<style type="text/css">
+dt { text-align: left; }
+.reveal li small { vertical-align: middle; }
+.reveal img { vertical-align: middle; }
+.reveal a { color: #5689d0; }
+
+.reveal pre {
+  box-shadow: none;
+  width: 100%;
+}
+
+.reveal pre code {
+    /* background: #cdf; */
+    background: white;
+    color: #3f3f3f;
+    border: solid black 1px;
+    padding: 1em;
+    box-shadow: none;
+}
+
+tt, code, pre {
+  font-family: 'Source Code Pro', monospace !important;
+}
+
+tt {
+  color: #142a36;
+    background: #a98b19;
+}
+
+pre > code {
+  max-height: none !important;
+}
+
+.aside {
+  font-size: 75% !important;
+  opacity: 0.5;
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+<div class="reveal">
+
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+
+    <section>
+        <h1>Logging</h1>
+        <h3>A journey through time</h3>
+        <small>by <a href="mailto:kneufeld@burgundywall.com">Kurt Neufeld</a></small><br/>
+        <small><a href="http://www.burgundywall.com">www.burgundywall.com</a></small><br/>
+        <small><a href="https://twitter.com/kneufeld">@kneufeld</a></small><br/>
+        <small><a href="https://github.com/py-yyc/pylogging">github.com/py-yyc/pylogging</a></small><br/>
+    </section>
+
+    <section>
+        <h2>What is logging?</h2>
+    </section>
+
+    <section>
+        <img src="images/logging-bw.jpg" alt="" />
+        <p class="fragment">no</p>
+    </section>
+
+    <section>
+        <img src="images/stacked-logs.jpg" alt="" />
+        <p class="fragment">closer</p>
+    </section>
+
+    <section>
+      <pre style="overflow: hidden">
+INFO  2016-05-22 14:13:54,131 twisted:154: Log opened.
+INFO  2016-05-22 14:13:54,154 dailydb.haystack_search:15: search: 'rude goldberg', num results: 2
+WARNING 2016-05-22 14:13:54,166 twisted:154: /home/httpd/redpics/virt/lib/python2.7/site-packages/django/shortcuts.py:45: django.utils.deprecation.RemovedInDjango110Warning: The context_instance argument of render_to_string is deprecated.
+WARNING 2016-05-22 14:14:25,164 django.request:103: Forbidden (Referer checking failed - no Referer.): /redpics/search/
+INFO  2016-05-22 14:14:44,249 dailydb.haystack_search:15: search: 'rude goldberg', num results: 2
+INFO  2016-05-22 14:18:03,033 dailydb.haystack_search:15: search: 'rude goldberg', num results: 2
+INFO  2016-05-22 14:18:30,989 twisted:154: Log opened.
+INFO  2016-05-22 14:18:31,012 dailydb.haystack_search:15: search: 'rude goldberg', num results: 2
+WARNING 2016-05-22 14:18:31,025 twisted:154: /home/httpd/redpics/virt/lib/python2.7/site-packages/django/shortcuts.py:45: django.utils.deprecation.RemovedInDjango110Warning: The context_instance argument of render_to_string is deprecated.
+INFO  2016-05-22 14:18:31,353 imagekit.specs:78: in here
+ERROR 2016-05-22 14:18:31,364 django.request:284: Internal Server Error: /redpics/search/
+Traceback (most recent call last):
+  File "/home/httpd/redpics/virt/lib/python2.7/site-packages/django/core/handlers/base.py", line 149, in get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/httpd/redpics/virt/lib/python2.7/site-packages/django/core/handlers/base.py", line 147, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+AssertionError
+      </pre>
+        <h2 class="fragment">ooohh...</h2>
+    </section>
+
+    <section>
+        <h2>What is logging?</h2>
+        <dl>
+            <dt class="fragment" data-fragment-index=1>logging</dt>
+            <dd class="fragment" data-fragment-index=1>(verb) a series of messages emitted from an application</dd>
+
+            <dt class="fragment" data-fragment-index=2>message</dt>
+            <dd class="fragment" data-fragment-index=2>(noun) a distinct piece of information</dd>
+            <dd class="fragment" data-fragment-index=2>emitted from an application (with a timestamp)</dd>
+            <dd  class="fragment" data-fragment-index=3>almost always a single line of text</dd>
+
+            <dt class="fragment" data-fragment-index=4>quick example</dt>
+            <dd class="fragment" data-fragment-index=4><pre>DEBUG 2015-03-14 06:00:01,700 pgrabber.imgparser:52: get_url_contents: http://dilbert.com/</pre></dd>
+        </dl>
+    </section>
+
+    <section>
+        <h2>Why log?</h2>
+
+        <p>There are several reasons why you want to enable logging.</p>
+        <ol>
+            <li class="fragment">aid in development</li>
+            <li class="fragment">have a record of errors</li>
+            <li class="fragment">application monitoring</li>
+            <ol>
+                <li class="fragment">metrics <small class="fragment">that took 3ms</small></li>
+                <li class="fragment">analytics <small class="fragment">somebody registered!</small></li>
+                <li class="fragment">alerts <small class="fragment">getting low on disc space</small></li>
+            </ol>
+            <li class="fragment">the law <small class="fragment">:(</small></li>
+            <li class="fragment">security audits <small class="fragment">:)</small></li>
+            <li class="fragment">have a history of low level information for future aid in debugging
+            <ul>
+              <li class="fragment">this is the <em>through time</em> part</li>
+              <li class="fragment">this is a gift to your future self</li>
+            </ul>
+            </li>
+        </ol>
+    </section>
+
+    <section>
+      <h2>Dissect Log Message</h2>
+      <small>
+        <span class="fragment highlight-red" data-fragment-index=1>DEBUG</span>
+        <span class="fragment highlight-blue" data-fragment-index=2>2015-03-14 06:00:01,700</span>
+        <span class="fragment highlight-green" data-fragment-index=3>pgrabber.imgparser:52:</span>
+        <span>get_url_contents: http://dilbert.com/</span>
+      </small>
+      <table>
+        <thead>
+          <tr><th>Piece</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+        <tr class="fragment" data-fragment-index=1><td><span style="color:#ff2c2d">level</span></td><td>DEBUG</td></tr>
+        <tr class="fragment" data-fragment-index=2><td><span style="color:#1b91ff">time stamp</span></td><td>2015-03-14 06:00:01,700</td></tr>
+        <tr class="fragment" data-fragment-index=3><td><span style="color:#17ff2e">location</td><td>pgrabber.imgparser:52</td></tr>
+          <tr class="fragment" data-fragment-index=4><td><span>message</span></td><td>get_url_contents: http://dilbert.com/</td></tr>
+          </tbody>
+        </table>
+        </section>
+
+        <section>
+            <h2>Who are logs for?</h2>
+            <p class="fragment">As previously mentioned, logs are for your future self. This implies that
+            logs are for humans. And they certainly can be, but more often than not...</p>
+            <p class="fragment">
+            Logs are for computers. Humans don't run analytics and create graphs by hand,
+            computers do that.
+            </p>
+            <p class="fragment">More on this later</p>
+        </section>
+
+        <section>
+          <h2>Python Logging</h2>
+          <p class="fragment">complicated to set up</p>
+          <p class="fragment">fantastic once that's done</p>
+        </section>
+
+        <section>
+          <h2>Logging functionality</h2>
+
+          <ul>
+            <li class="fragment">can be configured from code</li>
+            <li class="fragment">can be configured from a file</li>
+            <li class="fragment">can rotate the log files</li>
+            <li class="fragment">can log to a file, stdout, socket, database</li>
+            <li class="fragment">all at the same time!</li>
+            <li class="fragment">custom formatters, handlers, etc</li>
+            <li class="fragment">colors!</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Concepts</h2>
+
+          <dl>
+            <dt class="fragment" data-fragment-index=1>levels</dt>
+            <dd class="fragment" data-fragment-index=1>each message an associated level, can filter on that</dd>
+
+            <dt class="fragment" data-fragment-index=2>handler</dt>
+            <dd class="fragment" data-fragment-index=2>how a message is handled (write to file, stdout, etc)</dd>
+
+            <dt class="fragment" data-fragment-index=3>formatter</dt>
+            <dd class="fragment" data-fragment-index=3>how a message is formatted (show time, level, location, etc)</dd>
+
+            <dt class="fragment" data-fragment-index=4>logger</dt>
+            <dd class="fragment" data-fragment-index=4>instance that can have any of the above</dd>
+
+            <dt class="fragment" data-fragment-index=5>propagate</dt>
+            <dd class="fragment" data-fragment-index=5>pass message to another logger</dd>
+        </dl>
+        </section>
+
+        <section>
+          <h2>Ramifications</h2>
+
+          <ul>
+            <li class="fragment">critical messages can be emailed to devops</li>
+            <li class="fragment">debug messages can be written to fast drives</li>
+            <li class="fragment">turn logging on/off for modules</li>
+            <li class="fragment">different loggers can have different formatting</li>
+            <li class="fragment">you can turn off loggers</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>How to setup</h2>
+
+          <p class="fragment">https://docs.python.org/2/library/logging.html</p>
+
+          <p class="fragment">any questions?</p>
+        </section>
+
+        <section>
+          <h2>Simplest case</h2>
+          <p class="fragment">don't do this</p>
+          <pre class="fragment"><code data-trim class="language-python">
+import logging
+
+logging.info("info message") # nothing emitted
+logging.warn("warning message")
+# WARNING:root:warning message
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Next simplest case</h2>
+
+          <p class="fragment"><em>maybe</em> do this</p>
+
+          <pre class="fragment"><code data-trim class="language-python">
+import logging
+FORMAT = '%(levelname)-5s %(filename)s:%(lineno)d: %(message)s'
+logging.basicConfig( level=logging.DEBUG, format=FORMAT )
+
+logging.debug("debug message")
+# DEBUG main.py:5: debug message
+          </code></pre>
+
+          <p class="fragment">but don't do that</p>
+        </section>
+
+        <section>
+          <h2>More better (high level)</h2>
+
+          <pre class="fragment"><code data-trim class="language-python">
+# main.py
+configure_logging()
+          </code></pre>
+
+          <pre class="fragment"><code data-trim class="language-python">
+# a.py
+import logging
+logger = logging.getLogger( __name__ )
+
+logger.debug( "value is: %d", i )
+          </code></pre>
+
+          <pre class="fragment"><code data-trim class="language-python">
+# b.py
+import logging
+logger = logging.getLogger( __name__ )
+
+try:
+  raise Exeption
+except Exception as e:
+  logger.error( "exception: %s", e )
+  raise
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Log configuration</h2>
+
+          <pre class="fragment"><code data-trim class="language-python">
+# via dictionary
+import logging.config
+from logconf import logconf
+logging.config.dictConfig( logconf() )
+          </code></pre>
+
+          <pre class="fragment"><code data-trim class="language-python">
+# via file
+import logging.config
+from logconf import logconf
+logging.config.fileConfig( "logging.conf" )
+          </code></pre>
+
+          <pre class="fragment"><code data-trim class="language-python">
+# via code
+import logging.config
+
+logger = logging.getLogger()
+logger.setLevel( logging.NOTSET )
+...
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Log configuration</h2>
+
+          <pre><code data-trim class="language-python">
+def logconf():
+
+    return {
+      'version': 1,
+      'disable_existing_loggers': False,
+      'formatters': {
+          'thread_verbose': {
+              'format': '%(levelname)-5s %(asctime)s %(name)s:%(lineno)d %(process)d %(thread)d: %(message)s'
+          },
+          'verbose': {
+              'format': '%(levelname)-5s %(name)s:%(lineno)d: %(message)s'
+          },
+          'simple': {
+              'format': '%(levelname)-5s %(name)s:%(lineno)d: %(message)s',
+              'datefmt': '%H:%M:%S',
+          },
+      },
+      ...
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Log configuration</h2>
+
+          <pre><code data-trim class="language-python">
+...
+  'filters': {
+      'require_debug_false': {
+          '()': 'django.utils.log.RequireDebugFalse'
+      }
+  },
+...
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Log configuration</h2>
+
+          <pre><code data-trim class="language-python">
+  ...
+  'handlers': {
+      'null': {
+          'class':'logging.NullHandler',
+      },
+      'mail_admins': {
+          'level': 'ERROR',
+          'filters': ['require_debug_false'],
+          'class': 'django.utils.log.AdminEmailHandler'
+      },
+      'console':{
+          'level': 'DEBUG',
+          'class':'logging.StreamHandler',
+          'formatter': 'simple'
+      },
+      'logfile': {
+          'level': 'DEBUG',
+          'class':'logging.handlers.GroupWriteRotatingFileHandler',
+          'filename': '%s.log' % PROJECT_NAME,
+          'maxBytes': 500000,
+          'backupCount': 2,
+          'formatter': 'verbose',
+      },
+  },
+...
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Log configuration</h2>
+
+          <pre><code data-trim class="language-python">
+...
+  'loggers': {
+      '': { # default/root catch all
+          'handlers': ['logfile'],
+          'propagate': False,
+          'level': 'WARNING',
+      },
+      'requests': { # requests library
+          'handlers':['null'],
+          'propagate': False,
+          'level':'WARN',
+      },
+      'django': {
+          'propagate': True,
+          'level':'INFO',
+      },
+      MY_PROJECT: {
+          'handlers': ['console'],
+          'propagate': True,
+          'level': 'DEBUG',
+      },
+  },
+} # end of dictionary
+
+          </code></pre>
+        </section>
+
+        <section>
+          <h2 style="margin-top: 3em">libraries should <em>never</em><br/> format loggers</h2>
+          <h2 class="fragment">just get a logger<br/> and then log</h2>
+        </section>
+
+        <section>
+            <h2>Structured Logging</h2>
+            <p class="fragment">There is a growing <em>movement</em>
+            called structured logging</p>
+            <p class="fragment">If you know your log messages are going to be consumed
+            by a computer (vs a human) then why not make it easier on the computer (and
+            the human writing the code) by making the log message easily parseable.</p>
+            <p class="fragment">Write your log messages in JSON!</p>
+            <p class="fragment">(or xml if you hate yourself)</p>
+            <p class="fragment"><a href="https://docs.python.org/2/howto/logging-cookbook.html#implementing-structured-logging">python docs</a></p>
+        </section>
+
+        <section>
+            <h2>Structured Log</h2>
+
+            <p class="fragment">currently</p>
+            <pre class="fragment"><code data-trim class="language-python">
+logger.info( "%s: rendering web page took %d ms", self, render_time() )
+INFO 10:10:10.10 cheetah: rendering web page took 34 ms
+            </code></pre>
+            <p class="fragment">is now</p>
+            <pre class="fragment"><code data-trim class="language-python">
+logger.info( "render_time", what=self, took=render_time() )
+INFO, 10:10:10.10, "render_time", { what="cheetah", took=34 }
+            </code></pre>
+            <p class="fragment">which is easy to parse for both a computer and not too bad for a person</p>
+        </section>
+
+        <section>
+            <h2>Parsing A Structured Log</h2>
+            <pre class="fragment"><code data-trim class="language-python">
+            level, time, event, fields = json.loads(msg)
+            </code></pre>
+            <p><span class="fragment">that's it</span> <span class="fragment">, you're done</span></p>
+            <p class="fragment">that works for every single structured log message</p>
+            <p class="fragment">what you do with it is left as an exercise to the reader</p>
+        </section>
+
+        <section>
+            <h2>Performance</h2>
+            <p class="fragment">any logging framework worth its salt early exits if the log level is too low</p>
+            <pre class="fragment"><code data-trim class="language-python">
+for i in xrange(1000000): pass
+time: 0m0.019s # baseline for loop
+            </code></pre>
+            <pre class="fragment"><code data-trim class="language-python">
+# set log level to info
+for i in xrange(1000000): logger.debug("%d",i) # log level too low
+time: 0m0.061s # 0.042 seconds slower
+            </code></pre>
+            <pre class="fragment"><code data-trim class="language-python">
+# set log level to debug
+for i in xrange(1000000): logger.debug("%d",i) # no longer too low
+time: 0m37.931s # piped to /dev/null
+            </code></pre>
+            <p class="fragment">if you need one million log messages 38 seconds
+            is probably a small price to pay to get them</p>
+            <p class="fragment">so I don't want to <strong>EVER</strong> hear that you don't log
+            because it's <em>too slow</em></p>
+            <p class="fragment"><strong>EVER<span class="fragment">!!1!</span></strong></p>
+        </section>
+
+        <section>
+          <h2>3rd Party Software</h2>
+
+            <h3 class="fragment">sentry</h3>
+
+            <ul class="fragment">
+              <li>https://getsentry.com</li>
+              <li>written in python</li>
+              <li>dozens of language bindings</li>
+              <li>self hosted or paid service</li>
+              <li><tt>pip install sentry</tt></li>
+              <li>use a virtenv, lots of deps</li>
+            </ul>
+
+        </section>
+
+        <section>
+            <h2>3rd Party Software</h2>
+            <p>
+            <span class="fragment"><a href="http://logstash.net"><img src="images/logstash-logo.png" height=100 /> logstash</a></span>
+            <span class="fragment">+</span>
+            <span class="fragment"><a href="https://www.elastic.co/products/kibana"><img src="images/kibana-logo.png"/></a>
+            <span class="fragment">=</span>
+            </p>
+            <p class="fragment"><a href="images/kibana-1.png"><img src="images/kibana-1.png" width=75% /></a></p>
+        </section>
+
+        <section>
+            <h2>Logstash</h2>
+            <p>I've only just started playing with logstash so I'm nowhere
+            close to an expert. Check it out online and watch some youtube videos.</p>
+            <p class="fragment">Having said that, here's my expert opinion.</p>
+            <p class="fragment"><strong>It's freaking awesome!</strong></p>
+            <p class="fragment">Logstash parses the logs and then
+            feeds these records to <a href="https://www.elastic.co/products/elasticsearch">elasticsearch</a> which can then be searched and graphed using kibana. Kibana
+            is a search and graphing frontend to elasticsearch.</p>
+        </section>
+
+        <section style="text-align: left;">
+            <h1>THE END</h1>
+            <h3 class="fragment">questions?</h3>
+            <h3 class="fragment">before code examples.</h3>
+        </section>
+
+    </div><!-- slides -->
+
+</div>!-- reveal -->
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+
+// Full list of configuration options available at:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+controls: true,
+progress: true,
+history: true,
+center: false,
+mouseWheel: false,
+fragments: true,
+
+/*
+width: 1024,
+height: 768,
+
+margin: 0.1,
+
+minScale: 0.2,
+maxScale: 10.0,
+*/
+
+transition: 'none', // none/fade/slide/convex/concave/zoom
+
+// Optional reveal.js plugins
+dependencies: [
+{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+{ src: 'plugin/zoom-js/zoom.js', async: true },
+{ src: 'plugin/notes/notes.js', async: true }
+]
+});
+
+</script>
+
+</body>
+</html>

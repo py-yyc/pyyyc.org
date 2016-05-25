@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <title>crossbar.io / wamp</title>
+  <meta name="copyright" content="" />
+  <link rel="stylesheet" type="text/css" media="screen, projection, print" href="slidy.css" />
+  <script src="//autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+  <script src="/frontend.js"></script>
+  <script src="slidy.js" charset="utf-8" type="text/javascript"></script>
+  <style type="text/css">
+
+.asciicast, iframe {
+height: 90%;
+min-height: 90% !important;
+}
+
+    div.slide
+    {
+      font: 200% helvetica, arial;
+height: 100%;
+    }
+    h1,h2,h3,h4
+    {
+      text-align: center;
+      font-variant:small-caps;
+    }
+    .small
+    {
+      font-size: 70%;
+      color: #999;
+color: #657b83;
+color: #eee8d5;
+color: #93a1a1;
+    }
+
+    .comment
+    {
+      color: red;
+    }
+
+    div.slide
+    {
+      padding-left: 0;
+     max-width: 100%;
+    }
+
+    h1
+    {
+      width:100%;
+      text-align:center;
+      border-bottom: 1px solid #2aa198;
+/*      box-shadow: 0px 2px 10px -2px #b58900; */
+    }
+  </style>
+  <style type="text/css">
+
+@font-face
+{
+      font-family: 'Source Code Pro Regular';
+      src: url('source-code-pro-regular.ttf') format('ttf');
+}
+
+
+pre { font-family: 'source code pro', monospace; font-weight: normal;}
+
+td.linenos { background-color: #f0f0f0; padding-right: 10px; }
+span.lineno { background-color: #f0f0f0; padding: 0 5px 0 5px; }
+pre {  line-height: 125%; padding: 0; border-radius: 5px; border: none; width: 100%; margin: 0; border:0;}
+div.highlight  { padding-left: 10%;background-color: #49483e; width: 90%; border: 0; margin:0;}
+
+/* base03 */
+pre { background-color: #002b36; }
+div.highlight { background-color: #002b36;}
+/* base3 (light) */
+pre { background-color: #fdf6e3; }
+div.highlight { background-color: #fdf6e3; }
+/* base02 is: #073642 */
+
+/* pre { padding-bottom: 0.1em; margin-bottom: 1px; } */
+pre { padding-bottom: 0.3em; }
+
+tt { font-samily: 'source code pro', monospace; color: #859900; background-color: #002b36; background-color: #fdf6e3;}
+
+.hll { background-color: #ffffcc }
+.c { color: #586e75; font-style: italic } /* Comment */
+.err { color: #dc322f } /* Error */
+.g { color: #839496 } /* Generic */
+.k { color: #859900 } /* Keyword */
+.l { color: #839496 } /* Literal */
+.n { color: #93a1a1 } /* Name */
+.o { color: #839496 } /* Operator */
+.x { color: #839496 } /* Other */
+.p { color: #839496 } /* Punctuation */
+.cm { color: #586e75; font-style: italic } /* Comment.Multiline */
+.cp { color: #586e75; font-style: italic } /* Comment.Preproc */
+.c1 { color: #586e75; font-style: italic } /* Comment.Single */
+.cs { color: #586e75; font-style: italic } /* Comment.Special */
+.gd { color: #839496 } /* Generic.Deleted */
+.ge { color: #839496 } /* Generic.Emph */
+.gr { color: #839496 } /* Generic.Error */
+.gh { color: #839496 } /* Generic.Heading */
+.gi { color: #839496 } /* Generic.Inserted */
+.go { color: #839496 } /* Generic.Output */
+.gp { color: #839496 } /* Generic.Prompt */
+.gs { color: #839496 } /* Generic.Strong */
+.gu { color: #839496 } /* Generic.Subheading */
+.gt { color: #839496 } /* Generic.Traceback */
+.kc { color: #859900 } /* Keyword.Constant */
+.kd { color: #859900 } /* Keyword.Declaration */
+.kn { color: #cb4b16 } /* Keyword.Namespace */
+.kp { color: #cb4b16 } /* Keyword.Pseudo */
+.kr { color: #859900 } /* Keyword.Reserved */
+.kt { color: #859900 } /* Keyword.Type */
+.ld { color: #839496 } /* Literal.Date */
+.m { color: #2aa198 } /* Literal.Number */
+.s { color: #2aa198 } /* Literal.String */
+.na { color: #839496 } /* Name.Attribute */
+.nb { color: #268bd2 } /* Name.Builtin */
+.nc { color: #268bd2 } /* Name.Class */
+.no { color: #b58900 } /* Name.Constant */
+.nd { color: #cb4b16 } /* Name.Decorator */
+.ni { color: #cb4b16 } /* Name.Entity */
+.ne { color: #cb4b16 } /* Name.Exception */
+.nf { color: #268bd2 } /* Name.Function */
+.nl { color: #839496 } /* Name.Label */
+.nn { color: #b58900 } /* Name.Namespace */
+.nx { color: #839496 } /* Name.Other */
+.py { color: #268bd2 } /* Name.Property */
+.nt { color: #859900 } /* Name.Tag */
+.nv { color: #cb4b16 } /* Name.Variable */
+.ow { color: #859900 } /* Operator.Word */
+.w { color: #002b36 } /* Text.Whitespace */
+.mf { color: #2aa198 } /* Literal.Number.Float */
+.mh { color: #2aa198 } /* Literal.Number.Hex */
+.mi { color: #2aa198 } /* Literal.Number.Integer */
+.mo { color: #2aa198 } /* Literal.Number.Oct */
+.sb { color: #2aa198 } /* Literal.String.Backtick */
+.sc { color: #2aa198 } /* Literal.String.Char */
+.sd { color: #2aa198 } /* Literal.String.Doc */
+.s2 { color: #2aa198 } /* Literal.String.Double */
+.se { color: #cb4b16 } /* Literal.String.Escape */
+.sh { color: #2aa198 } /* Literal.String.Heredoc */
+.si { color: #cb4b16 } /* Literal.String.Interpol */
+.sx { color: #2aa198 } /* Literal.String.Other */
+.sr { color: #2aa198 } /* Literal.String.Regex */
+.s1 { color: #2aa198 } /* Literal.String.Single */
+.ss { color: #2aa198 } /* Literal.String.Symbol */
+.bp { color: #268bd2; font-weight: bold } /* Name.Builtin.Pseudo */
+.vc { color: #268bd2 } /* Name.Variable.Class */
+.vg { color: #268bd2 } /* Name.Variable.Global */
+.vi { color: #268bd2 } /* Name.Variable.Instance */
+.il { color: #2aa198 } /* Literal.Number.Integer.Long */
+
+
+
+pre.output {
+background-color: #073642;
+background-color: #000;
+color: #3a3;
+padding-left: 2em; padding-right: -2em;
+}
+
+ul { margin-left: 3em; }
+li { list-style-type: disc !important; }
+li:before { content: (">"); font-size: 50%; }
+
+
+
+
+
+/*** purely for yycjs/pyyyc demo stuff **/
+
+
+#status {
+position: absolute;
+top: 0;
+left: 0;
+z-index: 2000;
+font-size: 50%;
+}
+#client_count {
+position: absolute;
+top: 1em;
+left: 0;
+z-index: 2000;
+font-size: 50%;
+color: black;
+font-size: 16pt;
+}
+
+#toggle {
+position: absolute;
+top: 0;
+right: 0;
+z-index: 2000;
+font-size: 50%;
+height: 1em;
+width: 3em;
+color: black;
+}
+
+.board {
+position: absolute;
+bottom: 1em;
+right: 0;
+z-index: 2000;
+height: 25%;
+width: 25%;
+border: 5px solid black;
+border-radius: 15px;
+background-color: rgba(0, 0, 0, 0.8);
+}
+
+
+.board tr {
+    height: 5%;
+}
+
+.board td {
+    margin: 0px;
+    padding: 0px;
+    width: 5%;
+    width: calc(5% - 2px);
+    border-radius: 0.25vw;
+}
+
+.board a {
+    display: block;
+    border: 1px solid transparent;
+    padding: 4px;
+    height: 95%;
+    width: 95%;
+    height: calc(100% - 10px);
+    width: calc(100% - 10px);
+    border-radius: 0.25vw;
+}
+
+.board a:hover {
+  padding: 0px;
+  border: 5px solid #cb4b16;
+  box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.8);
+}
+
+
+  </style>
+</head>
+<body>
+    <div id="status"></div>
+    <div id="client_count">Clients: ?</div>
+    <div id="toggle" onclick="toggle_demo();">demo</div>
+    <table class="board" id="board">
+        <tr><td id="pixel_0_0"><a href="#" onclick="return pixel_click(0, 0);"></a></td><td id="pixel_1_0"><a href="#" onclick="return pixel_click(1, 0);"></a></td><td id="pixel_2_0"><a href="#" onclick="return pixel_click(2, 0);"></a></td><td id="pixel_3_0"><a href="#" onclick="return pixel_click(3, 0);"></a></td><td id="pixel_4_0"><a href="#" onclick="return pixel_click(4, 0);"></a></td><td id="pixel_5_0"><a href="#" onclick="return pixel_click(5, 0);"></a></td><td id="pixel_6_0"><a href="#" onclick="return pixel_click(6, 0);"></a></td><td id="pixel_7_0"><a href="#" onclick="return pixel_click(7, 0);"></a></td><td id="pixel_8_0"><a href="#" onclick="return pixel_click(8, 0);"></a></td><td id="pixel_9_0"><a href="#" onclick="return pixel_click(9, 0);"></a></td><td id="pixel_10_0"><a href="#" onclick="return pixel_click(10, 0);"></a></td><td id="pixel_11_0"><a href="#" onclick="return pixel_click(11, 0);"></a></td><td id="pixel_12_0"><a href="#" onclick="return pixel_click(12, 0);"></a></td><td id="pixel_13_0"><a href="#" onclick="return pixel_click(13, 0);"></a></td><td id="pixel_14_0"><a href="#" onclick="return pixel_click(14, 0);"></a></td><td id="pixel_15_0"><a href="#" onclick="return pixel_click(15, 0);"></a></td></tr>
+        <tr><td id="pixel_0_1"><a href="#" onclick="return pixel_click(0, 1);"></a></td><td id="pixel_1_1"><a href="#" onclick="return pixel_click(1, 1);"></a></td><td id="pixel_2_1"><a href="#" onclick="return pixel_click(2, 1);"></a></td><td id="pixel_3_1"><a href="#" onclick="return pixel_click(3, 1);"></a></td><td id="pixel_4_1"><a href="#" onclick="return pixel_click(4, 1);"></a></td><td id="pixel_5_1"><a href="#" onclick="return pixel_click(5, 1);"></a></td><td id="pixel_6_1"><a href="#" onclick="return pixel_click(6, 1);"></a></td><td id="pixel_7_1"><a href="#" onclick="return pixel_click(7, 1);"></a></td><td id="pixel_8_1"><a href="#" onclick="return pixel_click(8, 1);"></a></td><td id="pixel_9_1"><a href="#" onclick="return pixel_click(9, 1);"></a></td><td id="pixel_10_1"><a href="#" onclick="return pixel_click(10, 1);"></a></td><td id="pixel_11_1"><a href="#" onclick="return pixel_click(11, 1);"></a></td><td id="pixel_12_1"><a href="#" onclick="return pixel_click(12, 1);"></a></td><td id="pixel_13_1"><a href="#" onclick="return pixel_click(13, 1);"></a></td><td id="pixel_14_1"><a href="#" onclick="return pixel_click(14, 1);"></a></td><td id="pixel_15_1"><a href="#" onclick="return pixel_click(15, 1);"></a></td></tr>
+        <tr><td id="pixel_0_2"><a href="#" onclick="return pixel_click(0, 2);"></a></td><td id="pixel_1_2"><a href="#" onclick="return pixel_click(1, 2);"></a></td><td id="pixel_2_2"><a href="#" onclick="return pixel_click(2, 2);"></a></td><td id="pixel_3_2"><a href="#" onclick="return pixel_click(3, 2);"></a></td><td id="pixel_4_2"><a href="#" onclick="return pixel_click(4, 2);"></a></td><td id="pixel_5_2"><a href="#" onclick="return pixel_click(5, 2);"></a></td><td id="pixel_6_2"><a href="#" onclick="return pixel_click(6, 2);"></a></td><td id="pixel_7_2"><a href="#" onclick="return pixel_click(7, 2);"></a></td><td id="pixel_8_2"><a href="#" onclick="return pixel_click(8, 2);"></a></td><td id="pixel_9_2"><a href="#" onclick="return pixel_click(9, 2);"></a></td><td id="pixel_10_2"><a href="#" onclick="return pixel_click(10, 2);"></a></td><td id="pixel_11_2"><a href="#" onclick="return pixel_click(11, 2);"></a></td><td id="pixel_12_2"><a href="#" onclick="return pixel_click(12, 2);"></a></td><td id="pixel_13_2"><a href="#" onclick="return pixel_click(13, 2);"></a></td><td id="pixel_14_2"><a href="#" onclick="return pixel_click(14, 2);"></a></td><td id="pixel_15_2"><a href="#" onclick="return pixel_click(15, 2);"></a></td></tr>
+        <tr><td id="pixel_0_3"><a href="#" onclick="return pixel_click(0, 3);"></a></td><td id="pixel_1_3"><a href="#" onclick="return pixel_click(1, 3);"></a></td><td id="pixel_2_3"><a href="#" onclick="return pixel_click(2, 3);"></a></td><td id="pixel_3_3"><a href="#" onclick="return pixel_click(3, 3);"></a></td><td id="pixel_4_3"><a href="#" onclick="return pixel_click(4, 3);"></a></td><td id="pixel_5_3"><a href="#" onclick="return pixel_click(5, 3);"></a></td><td id="pixel_6_3"><a href="#" onclick="return pixel_click(6, 3);"></a></td><td id="pixel_7_3"><a href="#" onclick="return pixel_click(7, 3);"></a></td><td id="pixel_8_3"><a href="#" onclick="return pixel_click(8, 3);"></a></td><td id="pixel_9_3"><a href="#" onclick="return pixel_click(9, 3);"></a></td><td id="pixel_10_3"><a href="#" onclick="return pixel_click(10, 3);"></a></td><td id="pixel_11_3"><a href="#" onclick="return pixel_click(11, 3);"></a></td><td id="pixel_12_3"><a href="#" onclick="return pixel_click(12, 3);"></a></td><td id="pixel_13_3"><a href="#" onclick="return pixel_click(13, 3);"></a></td><td id="pixel_14_3"><a href="#" onclick="return pixel_click(14, 3);"></a></td><td id="pixel_15_3"><a href="#" onclick="return pixel_click(15, 3);"></a></td></tr>
+        <tr><td id="pixel_0_4"><a href="#" onclick="return pixel_click(0, 4);"></a></td><td id="pixel_1_4"><a href="#" onclick="return pixel_click(1, 4);"></a></td><td id="pixel_2_4"><a href="#" onclick="return pixel_click(2, 4);"></a></td><td id="pixel_3_4"><a href="#" onclick="return pixel_click(3, 4);"></a></td><td id="pixel_4_4"><a href="#" onclick="return pixel_click(4, 4);"></a></td><td id="pixel_5_4"><a href="#" onclick="return pixel_click(5, 4);"></a></td><td id="pixel_6_4"><a href="#" onclick="return pixel_click(6, 4);"></a></td><td id="pixel_7_4"><a href="#" onclick="return pixel_click(7, 4);"></a></td><td id="pixel_8_4"><a href="#" onclick="return pixel_click(8, 4);"></a></td><td id="pixel_9_4"><a href="#" onclick="return pixel_click(9, 4);"></a></td><td id="pixel_10_4"><a href="#" onclick="return pixel_click(10, 4);"></a></td><td id="pixel_11_4"><a href="#" onclick="return pixel_click(11, 4);"></a></td><td id="pixel_12_4"><a href="#" onclick="return pixel_click(12, 4);"></a></td><td id="pixel_13_4"><a href="#" onclick="return pixel_click(13, 4);"></a></td><td id="pixel_14_4"><a href="#" onclick="return pixel_click(14, 4);"></a></td><td id="pixel_15_4"><a href="#" onclick="return pixel_click(15, 4);"></a></td></tr>
+        <tr><td id="pixel_0_5"><a href="#" onclick="return pixel_click(0, 5);"></a></td><td id="pixel_1_5"><a href="#" onclick="return pixel_click(1, 5);"></a></td><td id="pixel_2_5"><a href="#" onclick="return pixel_click(2, 5);"></a></td><td id="pixel_3_5"><a href="#" onclick="return pixel_click(3, 5);"></a></td><td id="pixel_4_5"><a href="#" onclick="return pixel_click(4, 5);"></a></td><td id="pixel_5_5"><a href="#" onclick="return pixel_click(5, 5);"></a></td><td id="pixel_6_5"><a href="#" onclick="return pixel_click(6, 5);"></a></td><td id="pixel_7_5"><a href="#" onclick="return pixel_click(7, 5);"></a></td><td id="pixel_8_5"><a href="#" onclick="return pixel_click(8, 5);"></a></td><td id="pixel_9_5"><a href="#" onclick="return pixel_click(9, 5);"></a></td><td id="pixel_10_5"><a href="#" onclick="return pixel_click(10, 5);"></a></td><td id="pixel_11_5"><a href="#" onclick="return pixel_click(11, 5);"></a></td><td id="pixel_12_5"><a href="#" onclick="return pixel_click(12, 5);"></a></td><td id="pixel_13_5"><a href="#" onclick="return pixel_click(13, 5);"></a></td><td id="pixel_14_5"><a href="#" onclick="return pixel_click(14, 5);"></a></td><td id="pixel_15_5"><a href="#" onclick="return pixel_click(15, 5);"></a></td></tr>
+        <tr><td id="pixel_0_6"><a href="#" onclick="return pixel_click(0, 6);"></a></td><td id="pixel_1_6"><a href="#" onclick="return pixel_click(1, 6);"></a></td><td id="pixel_2_6"><a href="#" onclick="return pixel_click(2, 6);"></a></td><td id="pixel_3_6"><a href="#" onclick="return pixel_click(3, 6);"></a></td><td id="pixel_4_6"><a href="#" onclick="return pixel_click(4, 6);"></a></td><td id="pixel_5_6"><a href="#" onclick="return pixel_click(5, 6);"></a></td><td id="pixel_6_6"><a href="#" onclick="return pixel_click(6, 6);"></a></td><td id="pixel_7_6"><a href="#" onclick="return pixel_click(7, 6);"></a></td><td id="pixel_8_6"><a href="#" onclick="return pixel_click(8, 6);"></a></td><td id="pixel_9_6"><a href="#" onclick="return pixel_click(9, 6);"></a></td><td id="pixel_10_6"><a href="#" onclick="return pixel_click(10, 6);"></a></td><td id="pixel_11_6"><a href="#" onclick="return pixel_click(11, 6);"></a></td><td id="pixel_12_6"><a href="#" onclick="return pixel_click(12, 6);"></a></td><td id="pixel_13_6"><a href="#" onclick="return pixel_click(13, 6);"></a></td><td id="pixel_14_6"><a href="#" onclick="return pixel_click(14, 6);"></a></td><td id="pixel_15_6"><a href="#" onclick="return pixel_click(15, 6);"></a></td></tr>
+        <tr><td id="pixel_0_7"><a href="#" onclick="return pixel_click(0, 7);"></a></td><td id="pixel_1_7"><a href="#" onclick="return pixel_click(1, 7);"></a></td><td id="pixel_2_7"><a href="#" onclick="return pixel_click(2, 7);"></a></td><td id="pixel_3_7"><a href="#" onclick="return pixel_click(3, 7);"></a></td><td id="pixel_4_7"><a href="#" onclick="return pixel_click(4, 7);"></a></td><td id="pixel_5_7"><a href="#" onclick="return pixel_click(5, 7);"></a></td><td id="pixel_6_7"><a href="#" onclick="return pixel_click(6, 7);"></a></td><td id="pixel_7_7"><a href="#" onclick="return pixel_click(7, 7);"></a></td><td id="pixel_8_7"><a href="#" onclick="return pixel_click(8, 7);"></a></td><td id="pixel_9_7"><a href="#" onclick="return pixel_click(9, 7);"></a></td><td id="pixel_10_7"><a href="#" onclick="return pixel_click(10, 7);"></a></td><td id="pixel_11_7"><a href="#" onclick="return pixel_click(11, 7);"></a></td><td id="pixel_12_7"><a href="#" onclick="return pixel_click(12, 7);"></a></td><td id="pixel_13_7"><a href="#" onclick="return pixel_click(13, 7);"></a></td><td id="pixel_14_7"><a href="#" onclick="return pixel_click(14, 7);"></a></td><td id="pixel_15_7"><a href="#" onclick="return pixel_click(15, 7);"></a></td></tr>
+        <tr><td id="pixel_0_8"><a href="#" onclick="return pixel_click(0, 8);"></a></td><td id="pixel_1_8"><a href="#" onclick="return pixel_click(1, 8);"></a></td><td id="pixel_2_8"><a href="#" onclick="return pixel_click(2, 8);"></a></td><td id="pixel_3_8"><a href="#" onclick="return pixel_click(3, 8);"></a></td><td id="pixel_4_8"><a href="#" onclick="return pixel_click(4, 8);"></a></td><td id="pixel_5_8"><a href="#" onclick="return pixel_click(5, 8);"></a></td><td id="pixel_6_8"><a href="#" onclick="return pixel_click(6, 8);"></a></td><td id="pixel_7_8"><a href="#" onclick="return pixel_click(7, 8);"></a></td><td id="pixel_8_8"><a href="#" onclick="return pixel_click(8, 8);"></a></td><td id="pixel_9_8"><a href="#" onclick="return pixel_click(9, 8);"></a></td><td id="pixel_10_8"><a href="#" onclick="return pixel_click(10, 8);"></a></td><td id="pixel_11_8"><a href="#" onclick="return pixel_click(11, 8);"></a></td><td id="pixel_12_8"><a href="#" onclick="return pixel_click(12, 8);"></a></td><td id="pixel_13_8"><a href="#" onclick="return pixel_click(13, 8);"></a></td><td id="pixel_14_8"><a href="#" onclick="return pixel_click(14, 8);"></a></td><td id="pixel_15_8"><a href="#" onclick="return pixel_click(15, 8);"></a></td></tr>
+        <tr><td id="pixel_0_9"><a href="#" onclick="return pixel_click(0, 9);"></a></td><td id="pixel_1_9"><a href="#" onclick="return pixel_click(1, 9);"></a></td><td id="pixel_2_9"><a href="#" onclick="return pixel_click(2, 9);"></a></td><td id="pixel_3_9"><a href="#" onclick="return pixel_click(3, 9);"></a></td><td id="pixel_4_9"><a href="#" onclick="return pixel_click(4, 9);"></a></td><td id="pixel_5_9"><a href="#" onclick="return pixel_click(5, 9);"></a></td><td id="pixel_6_9"><a href="#" onclick="return pixel_click(6, 9);"></a></td><td id="pixel_7_9"><a href="#" onclick="return pixel_click(7, 9);"></a></td><td id="pixel_8_9"><a href="#" onclick="return pixel_click(8, 9);"></a></td><td id="pixel_9_9"><a href="#" onclick="return pixel_click(9, 9);"></a></td><td id="pixel_10_9"><a href="#" onclick="return pixel_click(10, 9);"></a></td><td id="pixel_11_9"><a href="#" onclick="return pixel_click(11, 9);"></a></td><td id="pixel_12_9"><a href="#" onclick="return pixel_click(12, 9);"></a></td><td id="pixel_13_9"><a href="#" onclick="return pixel_click(13, 9);"></a></td><td id="pixel_14_9"><a href="#" onclick="return pixel_click(14, 9);"></a></td><td id="pixel_15_9"><a href="#" onclick="return pixel_click(15, 9);"></a></td></tr>
+        <tr><td id="pixel_0_10"><a href="#" onclick="return pixel_click(0, 10);"></a></td><td id="pixel_1_10"><a href="#" onclick="return pixel_click(1, 10);"></a></td><td id="pixel_2_10"><a href="#" onclick="return pixel_click(2, 10);"></a></td><td id="pixel_3_10"><a href="#" onclick="return pixel_click(3, 10);"></a></td><td id="pixel_4_10"><a href="#" onclick="return pixel_click(4, 10);"></a></td><td id="pixel_5_10"><a href="#" onclick="return pixel_click(5, 10);"></a></td><td id="pixel_6_10"><a href="#" onclick="return pixel_click(6, 10);"></a></td><td id="pixel_7_10"><a href="#" onclick="return pixel_click(7, 10);"></a></td><td id="pixel_8_10"><a href="#" onclick="return pixel_click(8, 10);"></a></td><td id="pixel_9_10"><a href="#" onclick="return pixel_click(9, 10);"></a></td><td id="pixel_10_10"><a href="#" onclick="return pixel_click(10, 10);"></a></td><td id="pixel_11_10"><a href="#" onclick="return pixel_click(11, 10);"></a></td><td id="pixel_12_10"><a href="#" onclick="return pixel_click(12, 10);"></a></td><td id="pixel_13_10"><a href="#" onclick="return pixel_click(13, 10);"></a></td><td id="pixel_14_10"><a href="#" onclick="return pixel_click(14, 10);"></a></td><td id="pixel_15_10"><a href="#" onclick="return pixel_click(15, 10);"></a></td></tr>
+        <tr><td id="pixel_0_11"><a href="#" onclick="return pixel_click(0, 11);"></a></td><td id="pixel_1_11"><a href="#" onclick="return pixel_click(1, 11);"></a></td><td id="pixel_2_11"><a href="#" onclick="return pixel_click(2, 11);"></a></td><td id="pixel_3_11"><a href="#" onclick="return pixel_click(3, 11);"></a></td><td id="pixel_4_11"><a href="#" onclick="return pixel_click(4, 11);"></a></td><td id="pixel_5_11"><a href="#" onclick="return pixel_click(5, 11);"></a></td><td id="pixel_6_11"><a href="#" onclick="return pixel_click(6, 11);"></a></td><td id="pixel_7_11"><a href="#" onclick="return pixel_click(7, 11);"></a></td><td id="pixel_8_11"><a href="#" onclick="return pixel_click(8, 11);"></a></td><td id="pixel_9_11"><a href="#" onclick="return pixel_click(9, 11);"></a></td><td id="pixel_10_11"><a href="#" onclick="return pixel_click(10, 11);"></a></td><td id="pixel_11_11"><a href="#" onclick="return pixel_click(11, 11);"></a></td><td id="pixel_12_11"><a href="#" onclick="return pixel_click(12, 11);"></a></td><td id="pixel_13_11"><a href="#" onclick="return pixel_click(13, 11);"></a></td><td id="pixel_14_11"><a href="#" onclick="return pixel_click(14, 11);"></a></td><td id="pixel_15_11"><a href="#" onclick="return pixel_click(15, 11);"></a></td></tr>
+        <tr><td id="pixel_0_12"><a href="#" onclick="return pixel_click(0, 12);"></a></td><td id="pixel_1_12"><a href="#" onclick="return pixel_click(1, 12);"></a></td><td id="pixel_2_12"><a href="#" onclick="return pixel_click(2, 12);"></a></td><td id="pixel_3_12"><a href="#" onclick="return pixel_click(3, 12);"></a></td><td id="pixel_4_12"><a href="#" onclick="return pixel_click(4, 12);"></a></td><td id="pixel_5_12"><a href="#" onclick="return pixel_click(5, 12);"></a></td><td id="pixel_6_12"><a href="#" onclick="return pixel_click(6, 12);"></a></td><td id="pixel_7_12"><a href="#" onclick="return pixel_click(7, 12);"></a></td><td id="pixel_8_12"><a href="#" onclick="return pixel_click(8, 12);"></a></td><td id="pixel_9_12"><a href="#" onclick="return pixel_click(9, 12);"></a></td><td id="pixel_10_12"><a href="#" onclick="return pixel_click(10, 12);"></a></td><td id="pixel_11_12"><a href="#" onclick="return pixel_click(11, 12);"></a></td><td id="pixel_12_12"><a href="#" onclick="return pixel_click(12, 12);"></a></td><td id="pixel_13_12"><a href="#" onclick="return pixel_click(13, 12);"></a></td><td id="pixel_14_12"><a href="#" onclick="return pixel_click(14, 12);"></a></td><td id="pixel_15_12"><a href="#" onclick="return pixel_click(15, 12);"></a></td></tr>
+        <tr><td id="pixel_0_13"><a href="#" onclick="return pixel_click(0, 13);"></a></td><td id="pixel_1_13"><a href="#" onclick="return pixel_click(1, 13);"></a></td><td id="pixel_2_13"><a href="#" onclick="return pixel_click(2, 13);"></a></td><td id="pixel_3_13"><a href="#" onclick="return pixel_click(3, 13);"></a></td><td id="pixel_4_13"><a href="#" onclick="return pixel_click(4, 13);"></a></td><td id="pixel_5_13"><a href="#" onclick="return pixel_click(5, 13);"></a></td><td id="pixel_6_13"><a href="#" onclick="return pixel_click(6, 13);"></a></td><td id="pixel_7_13"><a href="#" onclick="return pixel_click(7, 13);"></a></td><td id="pixel_8_13"><a href="#" onclick="return pixel_click(8, 13);"></a></td><td id="pixel_9_13"><a href="#" onclick="return pixel_click(9, 13);"></a></td><td id="pixel_10_13"><a href="#" onclick="return pixel_click(10, 13);"></a></td><td id="pixel_11_13"><a href="#" onclick="return pixel_click(11, 13);"></a></td><td id="pixel_12_13"><a href="#" onclick="return pixel_click(12, 13);"></a></td><td id="pixel_13_13"><a href="#" onclick="return pixel_click(13, 13);"></a></td><td id="pixel_14_13"><a href="#" onclick="return pixel_click(14, 13);"></a></td><td id="pixel_15_13"><a href="#" onclick="return pixel_click(15, 13);"></a></td></tr>
+        <tr><td id="pixel_0_14"><a href="#" onclick="return pixel_click(0, 14);"></a></td><td id="pixel_1_14"><a href="#" onclick="return pixel_click(1, 14);"></a></td><td id="pixel_2_14"><a href="#" onclick="return pixel_click(2, 14);"></a></td><td id="pixel_3_14"><a href="#" onclick="return pixel_click(3, 14);"></a></td><td id="pixel_4_14"><a href="#" onclick="return pixel_click(4, 14);"></a></td><td id="pixel_5_14"><a href="#" onclick="return pixel_click(5, 14);"></a></td><td id="pixel_6_14"><a href="#" onclick="return pixel_click(6, 14);"></a></td><td id="pixel_7_14"><a href="#" onclick="return pixel_click(7, 14);"></a></td><td id="pixel_8_14"><a href="#" onclick="return pixel_click(8, 14);"></a></td><td id="pixel_9_14"><a href="#" onclick="return pixel_click(9, 14);"></a></td><td id="pixel_10_14"><a href="#" onclick="return pixel_click(10, 14);"></a></td><td id="pixel_11_14"><a href="#" onclick="return pixel_click(11, 14);"></a></td><td id="pixel_12_14"><a href="#" onclick="return pixel_click(12, 14);"></a></td><td id="pixel_13_14"><a href="#" onclick="return pixel_click(13, 14);"></a></td><td id="pixel_14_14"><a href="#" onclick="return pixel_click(14, 14);"></a></td><td id="pixel_15_14"><a href="#" onclick="return pixel_click(15, 14);"></a></td></tr>
+        <tr><td id="pixel_0_15"><a href="#" onclick="return pixel_click(0, 15);"></a></td><td id="pixel_1_15"><a href="#" onclick="return pixel_click(1, 15);"></a></td><td id="pixel_2_15"><a href="#" onclick="return pixel_click(2, 15);"></a></td><td id="pixel_3_15"><a href="#" onclick="return pixel_click(3, 15);"></a></td><td id="pixel_4_15"><a href="#" onclick="return pixel_click(4, 15);"></a></td><td id="pixel_5_15"><a href="#" onclick="return pixel_click(5, 15);"></a></td><td id="pixel_6_15"><a href="#" onclick="return pixel_click(6, 15);"></a></td><td id="pixel_7_15"><a href="#" onclick="return pixel_click(7, 15);"></a></td><td id="pixel_8_15"><a href="#" onclick="return pixel_click(8, 15);"></a></td><td id="pixel_9_15"><a href="#" onclick="return pixel_click(9, 15);"></a></td><td id="pixel_10_15"><a href="#" onclick="return pixel_click(10, 15);"></a></td><td id="pixel_11_15"><a href="#" onclick="return pixel_click(11, 15);"></a></td><td id="pixel_12_15"><a href="#" onclick="return pixel_click(12, 15);"></a></td><td id="pixel_13_15"><a href="#" onclick="return pixel_click(13, 15);"></a></td><td id="pixel_14_15"><a href="#" onclick="return pixel_click(14, 15);"></a></td><td id="pixel_15_15"><a href="#" onclick="return pixel_click(15, 15);"></a></td></tr>
+      </table>
+<div class="slide">
+<!-- gathered html -->
+<h1 style="valign:center;"><img height="128" width="auto" style="max-height: 10%;" src="crossbar_icon_and_text_vectorized_yellow_icon.svg" /></h1>
+
+<div style="display: table; height: 80%; width: 100%;">
+  <div style="display: table-cell; vertical-align: middle; height: 100%; width: 100%; text-align: center;">
+    <p style="margin-bottom: 2em; font-family: 'source code pro', monospace;"><span style="color:#eee8d5;" class="small">http://</span>pyyyc.meejah.ca</p>
+  </div>
+</div>
+<!-- /html -->
+
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1 style="valign:center;"><img height="128" width="auto" style="max-height: 10%;" src="crossbar_icon_and_text_vectorized_yellow_icon.svg" /></h1>
+
+<div style="display: table; height: 80%; width: 100%;">
+  <div class="incremental" style="display: table-cell; vertical-align: middle; height: 100%; width: 100%; text-align: center;">
+
+    <img height="250" width="auto" src="avatar-transparent.svg" />
+    <p>mike warren<br/><span style="color:#93a1a1; font-size: 33%; position: relative; top: -.4em; font-family: 'source code pro', monospace;">https://</span><span style="color: #dc322f; font-family: 'source code pro', monospace; font-weight: bold;">meejah<span style="font-size: 66%; font-weight: normal;">.ca</span></span></p>
+  </div>
+</div>
+<!-- /html -->
+
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>table of contents</h1>
+<ul class="incremental">
+  <li>Specification <span class="small">(WAMP)</span></li>
+  <li>Libraries <span class="small">(Autobahn)</span></li>
+  <li>Router <span class="small">(Crossbar)</span></li>
+  <li>Demo! (and code)</li>
+<!--  <img src="overview.svg" width="80%" height="auto" /> -->
+</ul>
+<!-- /html -->
+
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+ <h1>overview</h1>
+ <ul class="incremental">
+   <li>WAMP <span class="small">&ldquo;Web Application Messaging Protocol&rdquo;</span></li>
+   <li>Remote Procedure Calls (RPC) &amp; PubSub</li>
+   <li>&ldquo;routed&rdquo;</li>
+   <li>Crossbar.io: WAMP router</li>
+   <li>Autobahn: <span class="incremental"> <span>.js, </span><span>Python, </span><span>&hellip;</span></li>
+ </ul>
+<!-- /html -->
+
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>why WAMP?</h1>
+<ul class="incremental">
+  <li>Microservices! SOA! IoT! &hellip;</li>
+  <li>Simple, popular patterns <span class="small">(PubSub, RPC)</span></li>
+  <li class="incremental"><span>Cross-language</span><br/>
+      <span class="small">JS, Python, C++, Java,</span>
+      <span class="small" style="font-size: 40%;">C#, Erlang, Go, Haskell, Lua, Objective-C, PHP, Ruby</span></li>
+  <li class="incremental">Python: <span>2</span><span>, 3</span><span>, and PyPy</span><span> using Twisted</span><span> <b>or</b> asyncio</span></li>
+  <li>Integration / deployment</li>
+</ul>
+<!-- /html -->
+
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>WAMP</h1>
+<ul class="incremental">
+  <li>IETF-proposed specification</li>
+  <li>several router + client implementations</li>
+  <li class="incremental">RPC: <span>register</span><span>, call</span></li>
+  <li class="incremental">PubSub: <span>publish</span><span>, subscribe</span></li>
+  <li class="incremental">Routed: <span>broker/dealer</span>
+    <ul>
+      <li class="incremental">pros:<span> NATs</span><span>, permissions</span><span>, orchestration &hellip;</span></li>
+      <li class="incremental">cons:<span> SPOF</span><span>, bandwidth &hellip;</span></li>
+    </ul>
+  </li>
+</ul>
+    
+<!-- /html -->
+
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>Autobahn</h1>
+<ul class="incremental">
+  <li>Transports: <span class="incremental"><span>WebSockets</span><span>, TCP</span><span>, Unix</span><span>, pipes</span><span> &hellip;</span></span></li>
+  <li>Serializations: <span class="incremental"><span>JSON</span><span>, msgpack</span><span class="small">, CBOR</span><span class="small">, UBJSON</span><span> &hellip;</span></span></li>
+  <li>Authentication: realms with roles</li>
+  <li>Authorization: URI-space</li>
+  <li class="incremental">Symmetric: <span>any component</span><span> can register</span><span>, call</span><span>, subscribe</span><span>, publish</span></li>
+</ul>
+<!-- /html -->
+
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>Crossbar</h1>
+<ul class="incremental">
+  <li>Implements a WAMP router</li>
+  <li>Authentication: anonymous, ticket, cryptosign, cookie, TLS</li>
+  <li>Authorization: static and dynamic</li>
+  <li>Uses WAMP internally</li>
+  <li>Exposes a WAMP API</li>
+  <li>HTTP ReST bridge</li>
+  <li>Many 'generic' Web services: <span class="small">e.g. upload files, support long-poll, reverse-proxy, WSGI, CGI, JSON-value, &hellip;</span></li>
+</ul>
+<!-- /html -->
+
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>demo?</h2>
+
+<ul>
+  <li><tt style="font-size: 150%;"><a style="color:#93a1a1;" href="http://pyyyc.meejah.ca/collabra-doodle.html">pyyyc.meejah.ca</a></tt></li>
+  <li>bare-bones! simple!</li>
+  <li>full-featured demos &rarr; <tt>https://demo.crossbar.io/</tt></li>
+  <li class="incremental">WAMP API:
+    <ul class="incremental">
+      <li>backend: <tt>meejah.click</tt></li>
+      <li>backend: <tt>meejah.get_board</tt></li>
+      <li>backend: <tt>meejah.get_client_count</tt></li>
+      <li>backend: publishes <tt>meejah.board_update</tt>, <tt>meejah.board_invalid</tt>
+      <li>browser: subscribes to, calls above</li>
+    </ul>
+  </li>
+</ul>
+<!-- /html -->
+
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>boilerplate</h1><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">autobahn.twisted</span> <span class="kn">import</span> <span class="n">wamp</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span class="c"># from autobahn.asyncio import wamp</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Game</span><span class="p">(</span><span class="n">wamp</span><span class="o">.</span><span class="n">ApplicationSession</span><span class="p">):</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">onJoin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">details</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;intersting code goes here&quot;&quot;&quot;</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">runner</span> <span class="o">=</span> <span class="n">wamp</span><span class="o">.</span><span class="n">ApplicationRunner</span><span class="p">(</span>
+        <span class="s">u&#39;ws://pyyyc.meejah.ca/ws&#39;</span><span class="p">,</span>
+        <span class="s">u&#39;demo&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre>    <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">Game</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1>backend</h1><!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="c"># a 16x16 grid of False values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">False</span><span class="p">]</span> <span class="o">*</span> <span class="mi">16</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Board</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># client_id -&gt; Client instance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clients</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_color_generator</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="n">COLORS</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clients</span><span class="p">[</span><span class="n">client_id</span><span class="p">]</span><span class="o">.</span><span class="n">click</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">client_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">):</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_color_generator</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clients</span><span class="p">[</span><span class="n">client_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">client_id</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">client_del</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clients</span><span class="p">[</span><span class="n">client_id</span><span class="p">]</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Board</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="c"># ...</span>
+    <span class="nd">@wamp.register</span><span class="p">(</span><span class="s">u&quot;meejah.get_client_count&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">client_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_clients</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre>    <span class="nd">@wamp.register</span><span class="p">(</span><span class="s">u&quot;meejah.get_board&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">as_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+            <span class="n">column</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+                <span class="n">column</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_pixel</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">state</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Board</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="c"># ...</span>
+    <span class="k">def</span> <span class="nf">_get_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clients</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">_state</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="nb">max</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">client</span><span class="o">.</span><span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                    <span class="nb">max</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">client</span><span class="o">.</span><span class="n">color</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                    <span class="nb">max</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">client</span><span class="o">.</span><span class="n">color</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Game</span><span class="p">(</span><span class="n">ApplicationSession</span><span class="p">):</span>
+    <span class="nd">@defer.inlineCallbacks</span>
+    <span class="k">def</span> <span class="nf">onJoin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">details</span><span class="p">):</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">_board</span> <span class="o">=</span> <span class="n">Board</span><span class="p">()</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre>        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_board</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre>        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre>        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_click</span><span class="p">,</span> <span class="s">u&quot;meejah.click&quot;</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">RegisterOptions</span><span class="p">(</span><span class="n">details_arg</span><span class="o">=</span><span class="s">&quot;details&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Game</span><span class="p">(</span><span class="n">ApplicationSession</span><span class="p">):</span>
+    <span class="c"># ...</span>
+    <span class="nd">@wamp.subscribe</span><span class="p">(</span><span class="s">u&quot;wamp.session.on_leave&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_session_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_board</span><span class="o">.</span><span class="n">client_del</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s">u&quot;meejah.board_invalid&quot;</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre>    <span class="nd">@wamp.subscribe</span><span class="p">(</span><span class="s">u&quot;wamp.session.on_join&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_session_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">details</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_board</span><span class="o">.</span><span class="n">client_add</span><span class="p">(</span><span class="n">details</span><span class="p">[</span><span class="s">&#39;session&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s">u&quot;meejah.board_invalid&quot;</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">autobahn.twisted.wamp</span> <span class="kn">import</span> <span class="n">ApplicationSession</span><span class="p">,</span> <span class="n">ApplicationRunner</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">twisted.internet.defer</span> <span class="kn">import</span> <span class="n">inlineCallbacks</span> <span class="k">as</span> <span class="n">coroutine</span>
+<span class="kn">from</span> <span class="nn">autobahn.twisted.util</span> <span class="kn">import</span> <span class="n">sleep</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">RandomAgent</span><span class="p">(</span><span class="n">ApplicationSession</span><span class="p">):</span>
+    <span class="nd">@coroutine</span>
+    <span class="k">def</span> <span class="nf">onJoin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">details</span><span class="p">):</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+                <span class="s">u&quot;meejah.click&quot;</span><span class="p">,</span>
+                <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+                <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="k">yield</span> <span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">runner</span> <span class="o">=</span> <span class="n">ApplicationRunner</span><span class="p">(</span><span class="s">u&#39;ws://pyyyc.meejah.ca/ws&#39;</span><span class="p">,</span> <span class="s">u&#39;demo&#39;</span><span class="p">)</span>
+    <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">RandomAgent</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<!-- /html -->
+
+  <div class="incremental">
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">autobahn.asyncio.wamp</span> <span class="kn">import</span> <span class="n">ApplicationSession</span><span class="p">,</span> <span class="n">ApplicationRunner</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">asyncio</span> <span class="kn">import</span> <span class="n">coroutine</span><span class="p">,</span> <span class="n">sleep</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">RandomAgent</span><span class="p">(</span><span class="n">ApplicationSession</span><span class="p">):</span>
+    <span class="nd">@coroutine</span>
+    <span class="k">def</span> <span class="nf">onJoin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">details</span><span class="p">):</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+                <span class="s">u&quot;meejah.click&quot;</span><span class="p">,</span>
+                <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+                <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="k">yield from</span> <span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+<div class="highlight"><pre><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">runner</span> <span class="o">=</span> <span class="n">ApplicationRunner</span><span class="p">(</span><span class="s">u&#39;ws://pyyyc.meejah.ca/ws&#39;</span><span class="p">,</span> <span class="s">u&#39;demo&#39;</span><span class="p">)</span>
+    <span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">RandomAgent</span><span class="p">)</span>
+</pre></div>
+<!--- chunk -->
+  </div>
+</div>
+
+<div class="slide">
+<!-- gathered html -->
+<h1 style="valign:center;"><img height="128" width="auto" style="max-height: 10%;" src="crossbar_icon_and_text_vectorized_yellow_icon.svg" /></h1>
+
+<div style="display: table; height: 80%; width: 100%; font-size: 200%;">
+  <div style="display: table-cell; vertical-align: middle; height: 100%; width: 100%; text-align: center;">
+
+    <p style="margin-bottom: 1em; font-family: 'source code pro', monospace;"><span style="color:#eee8d5;" class="small">http://</span>crossbar.io</p>
+    <p style="margin-bottom: 4em; font-family: 'source code pro', monospace;"><span style="color:#eee8d5;" class="small">http://</span>autobahn.ws</p>
+  </div>
+</div>
+<!-- /html -->
+
+</div>
+
+
+  <script type="text/javascript">
+    var _demo_on = true;
+    function toggle_demo() {
+	_demo_on = !_demo_on;
+	if (_demo_on) {
+	    document.getElementById("board").style.opacity = "1.0";
+	    document.getElementById("status").style.opacity = "1.0";
+	    document.getElementById("client_count").style.opacity = "1.0";
+	} else {
+	    document.getElementById("board").style.opacity = "0.0";
+	    document.getElementById("status").style.opacity = "0.0";
+	    document.getElementById("client_count").style.opacity = "0.0";
+        }
+    }
+    toggle_demo();
+  </script>
+
+</body>
+</html>
