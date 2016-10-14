@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+
+<title>@property</title>
+
+<meta name="description" content="quick talk about python properties">
+<meta name="author" content="Kurt Neufeld">
+<meta name="date" content="2016-08-23">
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="reveal/css/reveal.css">
+<link rel="stylesheet" href="reveal/css/theme/serif.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="reveal/lib/css/vs.css">
+
+<!-- Printing and PDF exports -->
+<script>
+var link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal/css/print/pdf.css' : 'reveal/css/print/paper.css';
+document.getElementsByTagName( 'head' )[0].appendChild( link );
+</script>
+
+<!--[if lt IE 9]>
+<script src="reveal/lib/js/html5shiv.js"></script>
+<![endif]-->
+
+<style type="text/css">
+dt { text-align: left; }
+.reveal li small { vertical-align: middle; }
+.reveal img { vertical-align: middle; }
+.reveal a { color: #5689d0; }
+
+.reveal pre {
+  box-shadow: none;
+  width: 100%;
+}
+
+.reveal pre code {
+    /* background: #cdf; */
+    background: white;
+    color: #3f3f3f;
+    border: solid black 1px;
+    padding: 1em;
+    box-shadow: none;
+}
+
+tt, code, pre {
+  font-family: 'Source Code Pro', monospace !important;
+}
+
+tt {
+  color: #3f3f3f;
+  background: white;
+}
+
+pre > code {
+  max-height: none !important;
+}
+
+.aside {
+  font-size: 75% !important;
+  opacity: 0.5;
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+<div class="reveal">
+
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+
+    <section>
+        <h1>property</h1>
+        <h3>getters & setters & stuff</h3>
+        <h4>2016-08-23</h4>
+        <small>by</small><br/>
+        <small><a href="mailto:kneufeld@burgundywall.com">Kurt Neufeld</a></small><br/>
+        <small><a style="font-family:monospace" href="https://goo.gl/29yfjV">https://goo.gl/29yfjV</a></small>
+    </section>
+
+    <section>
+        <h2>What is a property?</h2>
+        <p class="fragment">from the docs...</p>
+        <pre class="fragment"><code data-trim class="language-python">
+class property([fget[, fset[, fdel[, doc]]]])
+  Return a property attribute for new-style classes
+        </code></pre>
+        <p class="fragment">thanks a lot docs</p>
+    </section>
+
+    <section>
+        <h2>What is a property?</h2>
+        <p class="fragment">it's basically a setter and/or a getter</p>
+        <p class="fragment">it's basically a function where you don't need
+        to put <tt>()</tt> on the end</p>
+        <p class="fragment">it's basically a variable</p>
+        <p class="fragment">it can be a function call or decorator</p>
+        <p class="fragment">we need an example</p>
+    </section>
+
+    <section>
+        <h2>Example</h2>
+        <pre><code data-trim class="language-python">
+class Journal(object):
+
+  def __init__(self):
+    self._db = Database()
+
+    @property
+    def db(self):
+        return self._db
+        </code></pre>
+
+        <pre><code data-trim class="language-python">
+journal = Journal()
+print journal.db
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Example Breakdown</h2>
+        <pre><code data-trim class="language-python">
+class Journal(object):
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Example Breakdown</h2>
+        <pre><code data-trim class="language-python">
+class Journal(object): # object is important!
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Example Breakdown</h2>
+        <pre><code data-trim class="language-python">
+class Journal(object): # object is important!
+
+  def __init__(self):
+    self._db = Database()
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Example Breakdown</h2>
+        <pre><code data-trim class="language-python">
+class Journal(object): # object is important!
+
+  def __init__(self):
+    self._db = Database() # self._VAR is common pattern
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Example Breakdown</h2>
+        <pre><code data-trim class="language-python">
+class Journal(object): # object is important!
+
+  def __init__(self):
+    self._db = Database() # self._VAR is common pattern
+
+    @property
+    def db(self):
+        return self._db
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Example Breakdown</h2>
+        <pre><code data-trim class="language-python">
+class Journal(object): # object is important!
+
+  def __init__(self):
+    self._db = Database() # self._VAR is common pattern
+
+    @property
+    def db(self):         # db is a getter
+        return self._db   # return the variable
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Example Breakdown</h2>
+        <pre><code data-trim class="language-python">
+class Journal(object): # object is important!
+
+  def __init__(self):
+    self._db = Database() # self._VAR is common pattern
+
+    @property
+    def db(self):         # db is a getter
+        return self._db   # return the variable
+        </code></pre>
+
+        <pre><code data-trim class="language-python">
+journal = Journal()
+print journal.db
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Example Breakdown</h2>
+        <pre><code data-trim class="language-python">
+class Journal(object): # object is important!
+
+  def __init__(self):
+    self._db = Database() # self._VAR is common pattern
+
+    @property
+    def db(self):         # db is a getter
+        return self._db   # return the variable
+        </code></pre>
+
+        <pre><code data-trim class="language-python">
+journal = Journal()
+print journal.db          # don't need '()' to call getter
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Why use properties?</h2>
+
+        <p>You may be asking yourself, why not just name the variable
+        <tt>self.db</tt> instead of <tt>self._db</tt>?</p>
+
+        <p class="fragment">That's because this was a simple example.</p>
+
+        <p class="fragment">Even though in actual use it's more
+        aesthetically pleasing.</p>
+    </section>
+
+    <section>
+        <h2>Real Example</h2>
+        <pre><code data-trim class="language-python">
+class Journal(object):
+
+  def __init__(self):
+    self._db = Database()
+
+    @property
+    def db(self):
+        return self._db
+
+    @property
+    def model(self):
+        return self.db.get_model('entry')
+
+    @property
+    def manager(self):
+        return self.model.objects
+
+    @property
+    def entries(self):
+        return self.manager.all() 
+        </code></pre>
+
+        <pre><code data-trim class="language-python">
+journal = Journal()
+print journal.entries
+# print journal._db.get_model('entries').objects.all()
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Setters</h2>
+
+        <p>That's great and all, but still only some syntactic sugar.</p>
+
+        <p><tt>property</tt> is much more powerful when used as a setter.</p>
+    </section>
+
+    <section>
+        <h2>Setter Example</h2>
+        <pre><code data-trim class="language-python">
+class OnlyEvens(object):
+
+  def __init__(self, x=0):
+    self.x = x
+
+  @property
+  def x(self):
+    return self._x
+
+  @x.setter
+  def x(self, val):
+    assert val % 2 == 0
+    self._x = val
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Setter Example</h2>
+        <pre><code data-trim class="language-python">
+class OnlyEvens(object):
+
+  def __init__(self, x=0):
+    self.x = x              # wait, wut?
+
+  @property
+  def x(self):
+    return self._x
+
+  @x.setter
+  def x(self, val):
+    assert val % 2 == 0
+    self._x = val
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Setter Example</h2>
+        <pre><code data-trim class="language-python">
+class OnlyEvens(object):
+
+  def __init__(self, x=0):
+    self.x = x              # wait, wut?
+
+  @property
+  def x(self):              # I know this stuff now
+    return self._x          # wait, where did _x come from?
+
+  @x.setter
+  def x(self, val):
+    assert val % 2 == 0
+    self._x = val
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Setter Example</h2>
+        <pre><code data-trim class="language-python">
+class OnlyEvens(object):
+
+  def __init__(self, x=0):
+    self.x = x              # wait, wut?
+
+  @property
+  def x(self):              # I know this stuff now
+    return self._x          # wait, where did _x come from?
+
+  @x.setter                 # @x.setter, setter for x property
+  def x(self, val):
+    assert val % 2 == 0
+    self._x = val           # actual assignment
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Setter Example</h2>
+        <pre><code data-trim class="language-python">
+class OnlyEvens(object):
+
+  def __init__(self, x=0):
+    self.x = x              # wait, wut?
+
+  @property
+  def x(self):              # I know this stuff now
+    return self._x          # wait, where did _x come from?
+
+  @x.setter                 # @x.setter, setter for x property
+  def x(self, val):
+    assert val % 2 == 0     # OnlyEvens part
+    self._x = val           # actual assignment
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Setter Ideas</h2>
+        <ul>
+          <li class="fragment">validate input</li>
+          <li class="fragment">update caches</li>
+          <li class="fragment">update some other object</li>
+          <li class="fragment">reformat hard drive</li>
+          <li class="fragment">use your imagination!</li>
+        </ul>
+    </section>
+
+    <section>
+        <p>Remember this?</p>
+        <pre><code data-trim class="language-python">
+class property([fget[, fset[, fdel[, doc]]]])
+  Return a property attribute for new-style classes
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>Equivalent...</h2>
+        <pre><code data-trim class="language-python">
+class property([fget[, fset[, fdel[, doc]]]])
+  Return a property attribute for new-style classes
+        </code></pre>
+        <pre><code data-trim class="language-python">
+class OnlyEvens(object):
+
+  def __init__(self, x=0):
+    self.x = x
+
+  def get_x(self):
+    return self._x
+
+  def set_x(self, val):
+    assert val % 2 == 0
+    self._x = val
+
+  x = property( get_x, set_x )
+        </code></pre>
+    </section>
+
+    <section>
+      <h2>property</h2>
+
+      <p>I use them as <i>self documenting code</i>. External objects
+      are only allowed to use the property variables</p>
+
+      <p class="fragment">More visually pleasing</p>
+
+      <pre class="fragment"><code data-trim class="language-python">
+print a.x.y.z
+print a._x._y._z
+print a.x().y().z()
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>deleter method</h2>
+
+      <p>I've never used it. I can't think of a time when you'd use it. I
+      couldn't find example code where anybody else used it.</p>
+
+      <p class="fragment">I bet Dave has though.</p>
+    </section>
+
+    <section>
+      <h2>ProTip &trade;</h2>
+
+      <p>You can only call a <i>property</i> on an instance, not on a class.</p>
+
+      <pre class="fragment"><code data-trim class="language-python">
+class Foo(object):
+  def __init__(self):
+      self._x = 1
+
+Foo.x = property( lambda self: self._x)
+
+> print Foo.x
+&lt;property object at 0x104ce1d08&gt;
+
+> f = Foo()
+> print f.x
+1
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>reify</h2>
+
+      <p>I came across this groovy pattern called <i>reify</i>. On the first call
+      it's like a <i>property</i> but it changes itself into a variable.</p>
+
+      <p class="fragment">This is handy if you have some one-time
+      expensive setup to do, but don't necessarily need to pay the cost
+      all the time.</p>
+
+      <p class="fragment">Eg. create a database connection object some
+      of the time</p>
+    </section>
+
+    <section>
+      <h2>reify</h2>
+
+      <pre><code data-trim class="language-python">
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/_modules/pyramid/decorator.html#reify
+class reify(object):
+    def __init__(self, wrapped):
+        self.wrapped = wrapped
+
+        from functools import update_wrapper
+        update_wrapper(self, wrapped)
+
+    def __get__(self, inst, objtype=None):
+        if inst is None:
+            return self
+        val = self.wrapped(inst)
+        setattr(inst, self.wrapped.__name__, val)
+        return val
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>reify example</h2>
+
+      <pre><code data-trim class="language-python">
+class Foo(object):
+    @reify
+    def jammy(self):
+        print 'jammy called'
+        return 1
+
+> f = Foo()
+
+> print f.jammy
+jammy called
+1
+
+> print f.jammy
+1
+      </code></pre>
+    </section>
+
+    <section style="text-align: left;">
+        <h2 style="font-variant: small-caps">The End</h2>
+        <h3 class="fragment">questions?</h3>
+    </section>
+
+    </div><!-- slides -->
+
+</div><!-- reveal -->
+
+<script src="reveal/lib/js/head.min.js"></script>
+<script src="reveal/js/reveal.js"></script>
+
+<script>
+
+// Full list of configuration options available at:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+controls: true,
+progress: true,
+history: true, // don't put each slide in browser history
+center: false,
+mouseWheel: false,
+fragments: true, // turn on/off all fragments
+
+/*
+width: 1024,
+height: 768,
+
+margin: 0.1,
+
+minScale: 0.2,
+maxScale: 10.0,
+*/
+
+transition: 'none', // none/fade/slide/convex/concave/zoom
+
+// Optional reveal.js plugins
+dependencies: [
+{ src: 'reveal/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+{ src: 'reveal/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+{ src: 'reveal/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+{ src: 'reveal/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+{ src: 'reveal/plugin/zoom-js/zoom.js', async: true },
+{ src: 'reveal/plugin/notes/notes.js', async: true }
+]
+});
+
+</script>
+
+</body>
+</html>
