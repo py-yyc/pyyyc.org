@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+
+<title>MetaClasses</title>
+
+<meta name="description" content="talk about python metaclasses">
+<meta name="author" content="Kurt Neufeld">
+<meta name="date" content="2017-09-28">
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes, minimal-ui">
+
+<link rel="stylesheet" href="reveal/css/reveal.css">
+<link rel="stylesheet" href="reveal/css/theme/serif.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="reveal/lib/css/vs.css">
+
+<!-- Printing and PDF exports -->
+<script>
+var link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal/css/print/pdf.css' : 'reveal/css/print/paper.css';
+document.getElementsByTagName( 'head' )[0].appendChild( link );
+</script>
+
+<!--[if lt IE 9]>
+<script src="reveal/lib/js/html5shiv.js"></script>
+<![endif]-->
+
+<style type="text/css">
+
+dt { text-align: left; }
+
+.reveal li small { vertical-align: middle; }
+.reveal img { vertical-align: middle; }
+.reveal a { color: #5689d0; }
+
+.reveal pre {
+  box-shadow: none;
+  width: 100%;
+}
+
+.reveal pre code {
+    /* background: #cdf; */
+    background: white;
+    color: #3f3f3f;
+    border: solid black 1px;
+    padding: 1em;
+    box-shadow: none;
+}
+
+.slides {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+tt, code, pre {
+  font-family: 'Source Code Pro', monospace !important;
+}
+
+tt {
+  color: #3f3f3f;
+  background: white;
+}
+
+pre > code {
+  max-height: none !important;
+}
+
+.aside {
+  font-size: 75% !important;
+  opacity: 0.5;
+}
+
+html.title_img_bg .slide-background {
+  opacity: 0.3 !important;
+}
+
+#left {
+  left:-8.33%;
+  text-align: left;
+  float: left;
+  width:50%;
+  z-index:-10;
+}
+
+#right {
+  left:31.25%;
+  top: 75px;
+  float: right;
+  text-align: right;
+  z-index:-10;
+  width:50%;
+}
+
+h1 {
+  font-size: 20px;
+}
+
+h2 {
+  font-size: 60px !important;
+  font-style: italic !important;
+  white-space: nowrap !important;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="reveal">
+<header style="position: absolute;top: 50px; left: 100px; z-index:500; font-size:100px;background-color: rgba(0,0,0,0.5)"></header>
+  
+
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+
+    <section>
+      <h1>MetaClasses</h1>
+
+      <h3>you probably shouldn't use them</h3>
+
+      <h4>2017-09</h4>
+
+      <p>by</p>
+      <p><a style="color:black" href='mailto:kneufeld@burgundywall.com'>Kurt Neufeld</a></p>
+    </section>
+
+    <section>
+      <h2>MetaClasses</h2>
+
+      <ul>
+        <li class="fragment">what are they</li>
+        <li class="fragment">why do you need them</li>
+        <li class="fragment">why you almost never need them</li>
+      </ul>
+
+    </section>
+
+    <section>
+      <h2>But First!</h2>
+
+      <pre><code data-trim class="language-python fragment">
+      x = 1</code>
+      <code data-trim class="language-python fragment">
+      x = int(1)</code>
+      <code data-trim class="language-python fragment">
+      type(x) # &lt;type 'int'&gt;</code>
+      <code data-trim class="language-python fragment">
+      type(int) # ?</code>
+      </pre>
+    </section>
+
+    <section>
+      <h2>More But First!</h2>
+
+      <pre><code data-trim class="language-python fragment">
+      class MyClass(object): # always use object in 2.7
+          pass</code>
+      <code data-trim class="language-python fragment">
+      c = MyClass()</code>
+      <code data-trim class="language-python fragment">
+      type(c) # &lt;class '__main__.MyClass'&gt;
+      </code>
+      <code data-trim class="language-python fragment">
+      type(MyClass) # &lt;type 'type'&gt;</code>
+      </pre>
+
+      <p class="fragment">what happened to object?</p>
+    </section>
+
+    <section>
+      <h2>A Bit More First!</h2>
+
+      <pre><code data-trim class="language-python fragment">
+      type(int) # &lt;type 'type'&gt;</code></pre>
+
+      <pre><code data-trim class="language-python fragment">
+      type(object) # &lt;type 'type'&gt;</code></pre>
+
+      <p class="fragment">brain starts exploding here</p>
+
+      <pre><code data-trim class="language-python fragment">
+      type(type) # &lt;type 'type'&gt;</code></pre>
+
+      <p class="fragment">okay wtf?</p>
+    </section>
+
+
+    <section>
+      <h2>wut?</h2>
+
+      <p class="fragment">just as <tt>c</tt> is an instance of <tt>MyClass</tt></p>
+
+      <p class="fragment"><tt>MyClass</tt> is an instance of <tt>type</tt></p>
+
+      <p class="fragment">It's turtles all the way down, until
+      you get to <tt>type</tt></p>
+
+      <p class="fragment"><tt>type</tt> is an instance of <tt>type</tt></p>
+    </section>
+
+    <section>
+      <img src="images/mind_blown.gif" width='500'>
+    </section>
+
+    <section>
+      <h2>Lets make a class!</h2>
+
+      <pre><code data-trim class="language-python fragment">
+      name = 'MyClass'
+      bases = (object,)
+      _dict = {'x':1}
+
+      MyClass = type(name, bases, _dict)
+      </code></pre>
+
+      <pre><code data-trim class="language-python fragment">
+      type(MyClass) # &lt;type 'type'&gt;</code></pre>
+
+      <pre><code data-trim class="language-python fragment">
+      MyClass.x       # 1
+      c = MyClass()
+      c.x             # 1
+      c.x = 2
+      MyClass.x       # 1
+      c.x             # 2
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>We're already metaprogramming</h2>
+
+      <p class="fragment">So we used code to make a class.</p>
+      <p class="fragment">That's cool</p>
+    </section>
+
+    <section>
+      <h2>Why would you want to do this?</h2>
+
+      <p class="fragment">Who here has used Django? SQLAlchemy?</p>
+
+      <p class="fragment">The only reason I've come across to use
+      metaclasses is model definition when you wan to talk to a database</p>
+
+      <p class="fragment">There's probably several others</p>
+
+      <p class="fragment">I bet Dave knows a few</p>
+    </section>
+
+    <section>
+      <h2>Why would you want to do this?</h2>
+      
+      <p class="fragment">
+      When you want a new class with lots of functionality that almost
+      identical to another class but it has nothing in common with it</p>
+
+      <p class="fragment">same same but different</p>
+    </section>
+
+    <section>
+      <h2>General Pattern</h2>
+
+      <pre><code data-trim class="language-python fragment">
+      class MetaClass(type):
+
+        # this called once per derived class _definition_
+        def __new__(meta_class, name, bases, attrs):
+          new_class = type(name, bases, {})
+          self.do_things_to_class(new_class, attrs)
+          return new_class
+
+        # creates a new instance of derived class
+        def __call__(cls, *args, **kw):
+            obj = cls.__new__(cls, *args, **kw)
+            self.do_things_to_instance(obj)
+            obj.__init__(*args, **kw)
+            return obj
+      </code></pre>
+
+      <pre><code data-trim class="language-python fragment">
+      class MyClass(object):
+          __metaclass__ = MetaClass
+      </code></pre>
+
+    </section>
+
+    <section>
+      <h2>That doesn't look too bad...</h2>
+
+      <p class="fragment">Let's go spelunking!</p>
+    </section>
+
+    <section>
+      <h2>Good resources</h2>
+
+      <ul>
+        <li>https://blog.ionelmc.ro/2015/02/09/understanding-python-metaclasses/</li>
+        <li>https://eli.thegreenplace.net/2011/08/14/python-metaclasses-by-example</li>
+        <li>https://jakevdp.github.io/blog/2012/12/01/a-primer-on-python-metaclasses/</li>
+      </ul>
+    </section>
+
+    <section style="text-align: left;">
+        <h2 style="font-variant: small-caps">The End</h2>
+        <h3 class="fragment">questions?</h3>
+    </section>
+
+    </div><!-- slides -->
+
+</div><!-- reveal -->
+
+<script src="reveal/lib/js/head.min.js"></script>
+<script src="reveal/js/reveal.js"></script>
+
+<script>
+
+// Full list of configuration options available at:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+controls: true,
+progress: true,
+history: true, // do/don't put each slide in browser history
+center: false,
+mouseWheel: false,
+fragments: true, // turn on/off all fragments
+slideNumber: 'c/t',
+
+  /*
+width: 1024,
+height: 768,
+
+margin: 0.1,
+*/
+
+minScale: 1,
+maxScale: 1,
+
+transition: 'none', // none/fade/slide/convex/concave/zoom
+
+// Optional reveal.js plugins
+dependencies: [
+{ src: 'reveal/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+{ src: 'reveal/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+{ src: 'reveal/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+{ src: 'reveal/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+{ src: 'reveal/plugin/zoom-js/zoom.js', async: true },
+{ src: 'reveal/plugin/notes/notes.js', async: true }
+]
+});
+
+</script>
+
+</body>
+</html>
