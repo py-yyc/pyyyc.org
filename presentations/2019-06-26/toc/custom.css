@@ -1,0 +1,18 @@
+.reveal h1, .reveal h2, .reveal h2, .reveal h4, .reveal h5, .reveal h6 {
+    text-transform: none;
+    // font-variant: small-caps;
+}
+.reveal section img {
+    border: none;
+}
+.big {
+    font-size: 150%;
+}
+.small2 {
+    font-size: 50%;
+}
+
+td code, p code {
+    background: #eee;
+    padding: 0.25em;
+}
