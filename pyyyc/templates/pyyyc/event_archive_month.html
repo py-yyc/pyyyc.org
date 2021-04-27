@@ -1,0 +1,38 @@
+{% extends "pyyyc/base.html" %}
+<!-- -->
+{% load pyyyc_extras %}
+<!-- -->
+{% block navtitle %}
+<ul>
+  <li>{{ month.month }} Events</li>
+  {% if next_month %}
+  <li>
+    <a href="{% url 'event-month-archive' next_month.year next_month.month %}">
+      &gt; {{ next_month|strftime:"%Y-%m" }}
+    </a>
+  </li>
+  {% endif %} {% if previous_month %}
+  <li>
+    <a
+      href="{% url 'event-month-archive' previous_month.year previous_month.month %}"
+    >
+      &lt; {{ previous_month|strftime:"%Y-%m" }}
+    </a>
+  </li>
+  {% endif %}
+</ul>
+{% endblock %}
+<!-- -->
+{% block body %}
+<div>
+  <ul>
+    {% for object in object_list %}
+    <li>
+      <a href="{{ object.get_absolute_url }}">{{ object.date }}</a>
+      {{ object.name }}
+      <p>{{ object.html_description }}</p>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

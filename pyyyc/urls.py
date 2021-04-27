@@ -19,7 +19,7 @@ import re
 from django.conf import settings
 from django.urls import path, include, register_converter
 
-from pyyyc.views import EventList, EventDetail, EventYearArchive
+from pyyyc.views import EventList, EventDetail, EventYearArchive, EventMonthArchive
 
 
 class DateConverter:
@@ -39,6 +39,11 @@ urlpatterns = [
     path("", EventList.as_view()),
     path("<date:date>/", EventDetail.as_view(), name="event-detail"),
     path("<int:year>/", EventYearArchive.as_view(), name="event-year-archive"),
+    path(
+        "<int:year>-<int:month>/",
+        EventMonthArchive.as_view(month_format="%m"),
+        name="event-month-archive",
+    ),
 ]
 
 if settings.USE_DEBUG_TOOLBAR:

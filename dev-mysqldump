@@ -1,0 +1,12 @@
+#!/bin/bash
+
+DIR="$(dirname -- "${0}")"
+
+(cd "${DIR}" && docker-compose exec db bash -c '
+    mysqldump --defaults-file=<(echo "
+    [client]
+    host = localhost
+    user = ${MYSQL_USER}
+    password = ${MYSQL_PASSWORD}
+    ") "${MYSQL_DATABASE}"
+')

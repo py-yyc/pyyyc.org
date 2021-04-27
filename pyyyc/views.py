@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView, YearArchiveView
+from django.views.generic import ListView, DetailView, YearArchiveView, MonthArchiveView
 
 from pyyyc.models import Event
 
@@ -21,6 +21,13 @@ class EventList(ListView):
 
 
 class EventYearArchive(YearArchiveView):
+    queryset = Event.objects.filter(hidden=False)
+    date_field = "date"
+    make_object_list = True
+    allow_future = True
+
+
+class EventMonthArchive(MonthArchiveView):
     queryset = Event.objects.filter(hidden=False)
     date_field = "date"
     make_object_list = True

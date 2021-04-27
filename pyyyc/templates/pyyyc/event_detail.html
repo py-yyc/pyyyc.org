@@ -4,6 +4,22 @@
 <a href="{% url 'admin:pyyyc_event_change' object.id %}">View in admin</a>
 {% endblock %}
 <!-- -->
+{% block navtitle %}
+<!-- -->
+{% with previous=object.get_previous_by_date next=object.get_next_by_date %}
+<!-- -->
+{% if previous %}
+<a href="{{  previous.get_absolute_url }}">{{ previous.date }}</a>
+{% endif %}
+<!-- -->
+{% if next %}
+<a href="{{  next.get_absolute_url }}">{{ next.date }}</a>
+{% endif %}
+<!-- -->
+{% endwith %}
+<!-- -->
+{% endblock %}
+<!-- -->
 {% block body %}
 <div>
   <ul>
