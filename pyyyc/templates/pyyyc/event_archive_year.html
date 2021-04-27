@@ -1,0 +1,34 @@
+{% extends "pyyyc/base.html" %}
+<!-- -->
+{% block navtitle %}
+<ul>
+  <li>{{ year.year }} Events</li>
+  {% if next_year %}
+  <li>
+    <a href="{% url 'event-year-archive' next_year.year %}">
+      &gt; {{ next_year.year }}
+    </a>
+  </li>
+  {% endif %} {% if previous_year %}
+  <li>
+    <a href="{% url 'event-year-archive' previous_year.year %}">
+      &lt; {{ previous_year.year }}
+    </a>
+  </li>
+  {% endif %}
+</ul>
+{% endblock %}
+<!-- -->
+{% block body %}
+<div>
+  <ul>
+    {% for object in object_list %}
+    <li>
+      <a href="{{ object.get_absolute_url }}">{{ object.date }}</a>
+      {{ object.name }}
+      <p>{{ object.html_description }}</p>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

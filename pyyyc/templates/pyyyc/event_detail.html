@@ -1,0 +1,16 @@
+{% extends "pyyyc/base.html" %}
+<!-- -->
+{% block staff_extra %}
+<a href="{% url 'admin:pyyyc_event_change' object.id %}">View in admin</a>
+{% endblock %}
+<!-- -->
+{% block body %}
+<div>
+  <ul>
+    <li>
+      {{ object.date }} - {{ object.name }}
+      <p>{{ object.html_description }}</p>
+    </li>
+  </ul>
+</div>
+{% endblock %}

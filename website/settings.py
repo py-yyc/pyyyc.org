@@ -37,21 +37,30 @@ else:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+USE_DEBUG_TOOLBAR = DEBUG
+
 ALLOWED_HOSTS = []
+
+
+if DEBUG:
+    INTERNAL_IPS = ["127.0.0.1"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "pyyyc",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    *(["debug_toolbar"] if USE_DEBUG_TOOLBAR else []),
 ]
 
 MIDDLEWARE = [
+    *(["debug_toolbar.middleware.DebugToolbarMiddleware"] if USE_DEBUG_TOOLBAR else []),
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",

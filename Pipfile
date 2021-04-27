@@ -4,12 +4,14 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+bleach = "*"
 django = "*"
-black = "==21.4b0"
-python-dotenv = "*"
 mysqlclient = "*"
 
 [dev-packages]
+black = "==21.4b0"
+django-debug-toolbar = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.9"

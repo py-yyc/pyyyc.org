@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% if debug %}
+    <meta name="referrer" content="no-referrer" />
+    {% endif %}
+    <title>{% block title %}PyYYC{% endblock %}</title>
+  </head>
+  <body>
+    {% if user.is_staff %}
+    <div>Staff tools {% block staff_extra %} {% endblock %}</div>
+    {% endif %}
+    <div><a href="/">PyYYC</a>{% block navtitle %}{% endblock %}</div>
+    <!-- -->
+    {% block body %} {% endblock %}
+  </body>
+</html>

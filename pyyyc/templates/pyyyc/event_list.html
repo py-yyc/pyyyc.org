@@ -1,0 +1,15 @@
+{% extends "pyyyc/base.html" %}
+<!-- -->
+{% block body %}
+<div>
+  <ul>
+    {% for object in object_list %}
+    <li>
+      <a href="{{ object.get_absolute_url }}">{{ object.date }}</a>
+      {{ object.name }}
+      <p>{{ object.html_description }}</p>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
