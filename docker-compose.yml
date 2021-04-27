@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  db:
+    image: mysql:5.7
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      # docker-compose will automatically use a .env file
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+      - MYSQL_DATABASE
+    volumes:
+      - ./db:/var/lib/mysql
