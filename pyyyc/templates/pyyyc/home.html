@@ -3,12 +3,12 @@
 {% block body %}
 <div>
   <ul>
-    {% for object in object_list %}
+    {% for event in event_list %}
     <li>
       <a href="{{ object.get_absolute_url }}">{{ object.date }}</a>
-      {{ object.name }}
+      {{ event.name }}
       <!-- -->
-      {% include "pyyyc/event_detail_card_snippet.html" with event=object %}
+      {% include "pyyyc/event_detail_card_snippet.html" %}
     </li>
     {% endfor %}
   </ul>

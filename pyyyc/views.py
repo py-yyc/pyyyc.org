@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from django.views.generic import ListView, DetailView, YearArchiveView, MonthArchiveView
 
 from pyyyc.models import Event
@@ -15,9 +16,9 @@ class EventDetail(DetailView):
         return queryset.get()
 
 
-class EventList(ListView):
-    model = Event
-    queryset = Event.objects.filter(hidden=False).order_by("-date")
+def home(request):
+    events = Event.objects.filter(hidden=False).order_by("-date")[:2]
+    return render(request, "pyyyc/home.html", context={"event_list": events})
 
 
 class EventYearArchive(YearArchiveView):

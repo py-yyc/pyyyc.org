@@ -43,7 +43,7 @@ class Talk(models.Model):
     title = models.CharField(max_length=500)
     description = models.TextField(null=True, blank=True)
 
-    slides_links = models.URLField(null=True, blank=True)
+    slides_link = models.URLField(null=True, blank=True)
     code_link = models.URLField(null=True, blank=True)
     blog_link = models.URLField(null=True, blank=True)
     video_link = models.URLField(null=True, blank=True)

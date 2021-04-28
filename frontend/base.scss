@@ -1,0 +1,19 @@
+// https://getbootstrap.com/docs/4.6/getting-started/theming/
+
+$primary: #e03737;
+
+@import "~bootstrap/scss/_functions";
+@import "~bootstrap/scss/_variables";
+@import "~bootstrap/scss/_mixins";
+
+$enable-gradients: true;
+$enable-shadows: true;
+
+@import "~bootstrap/scss/_root";
+@import "~bootstrap/scss/_reboot";
+@import "~bootstrap/scss/_type";
+@import "~bootstrap/scss/_card";
+@import "~bootstrap/scss/_grid";
+@import "~bootstrap/scss/_nav";
+@import "~bootstrap/scss/_navbar";
+@import "~bootstrap/scss/_utilities";

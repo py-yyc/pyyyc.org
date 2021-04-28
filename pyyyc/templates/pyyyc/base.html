@@ -4,16 +4,72 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     {% if debug %}
+    <link rel="stylesheet" href="http://localhost:1234/base.css" />
+    <script src="http://localhost:1234/base.js"></script>
     <meta name="referrer" content="no-referrer" />
     {% endif %}
     <title>{% block title %}PyYYC{% endblock %}</title>
   </head>
   <body>
     {% if user.is_staff %}
-    <div>Staff tools {% block staff_extra %} {% endblock %}</div>
+    <nav class="navbar navbar-expand bg-gradient-dark text-white">
+      <span class="navbar-text">Staff tools</span>
+      <ul class="navbar-nav flex-grow-1">
+        {% block staff_extra %} {% endblock %}
+        <li class="nav-item ml-auto">
+          <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+        </li>
+      </ul>
+    </nav>
     {% endif %}
-    <div><a href="/">PyYYC</a>{% block navtitle %}{% endblock %}</div>
+
+    <nav class="navbar navbar-expand bg-danger text-white">
+      <i
+        >Due to the global catastrophe, all events will be online-only for the
+        foreseeable future.</i
+      >
+    </nav>
+
+    <nav
+      class="navbar navbar-expand bg-gradient-secondary text-white align-items-baseline"
+    >
+      <span class="navbar-brand">
+        <a href="/">PyYYC</a>: Calgary’s monthly Python meetup
+        <!-- -->{% block navtitle %}{% endblock %}
+      </span>
+
+      <ul class="navbar-nav flex-grow-1">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'event-year-archive' year=2021 %}"
+            >Slides and code</a
+          >
+        </li>
+
+        <li class="nav-item ml-auto">
+          <a class="nav-link" href="https://meetup.com/py-yyc">Meetup</a>
+        </li>
+
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            href="https://www.youtube.com/channel/UCHmgKriEMwtnSHHCqrcKTJQ"
+            >YouTube</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/py-yyc">GitHub</a>
+        </li>
+      </ul>
+    </nav>
+
+    <nav class="navbar navbar-expand bg-gradient-light">
+      <span class="nav-text">
+        <a href="https://meetup.com/py-yyc">Join our meetup group</a> to RSVP
+        for our next meetup!
+      </span>
+    </nav>
+
     <!-- -->
-    {% block body %} {% endblock %}
+    <div class="container">{% block body %} {% endblock %}</div>
   </body>
 </html>

@@ -30,7 +30,8 @@
     <li>
       <a href="{{ object.get_absolute_url }}">{{ object.date }}</a>
       {{ object.name }}
-      <p>{{ object.html_description }}</p>
+      <!-- -->
+      {% include "pyyyc/event_detail_card_snippet.html" with event=object %}
     </li>
     {% endfor %}
   </ul>

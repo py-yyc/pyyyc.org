@@ -1,34 +1,43 @@
 {% extends "pyyyc/base.html" %}
 <!-- -->
-{% block navtitle %}
-<ul>
-  <li>{{ year.year }} Events</li>
-  {% if next_year %}
-  <li>
-    <a href="{% url 'event-year-archive' next_year.year %}">
-      &gt; {{ next_year.year }}
-    </a>
-  </li>
-  {% endif %} {% if previous_year %}
-  <li>
-    <a href="{% url 'event-year-archive' previous_year.year %}">
-      &lt; {{ previous_year.year }}
-    </a>
-  </li>
-  {% endif %}
-</ul>
-{% endblock %}
-<!-- -->
 {% block body %}
-<div>
-  <ul>
-    {% for object in object_list %}
-    <li>
-      <a href="{{ object.get_absolute_url }}">{{ object.date }}</a>
-      {{ object.name }}
-      <p>{{ object.html_description }}</p>
-    </li>
-    {% endfor %}
-  </ul>
+<div style="float: right">
+  {% if next_year %}
+  <a href="{% url 'event-year-archive' next_year.year %}">
+    &lt; {{ next_year.year }}
+  </a>
+  {% endif %}
+  <span class="ml-3"></span>
+  {% if previous_year %}
+  <a href="{% url 'event-year-archive' previous_year.year %}">
+    {{ previous_year.year }} &gt;
+  </a>
+  {% endif %}
 </div>
-{% endblock %}
+
+<h1>PyYYC events: {{ year.year }}</h1>
+<div>
+  {% for event in event_list %}
+  <div>
+    <h2><a href="{{ event.get_absolute_url }}">{{ event.name }}</a></h2>
+    <h4>{{ event.date }}</h4>
+    {{ event.name }}
+    <!-- -->
+    {% include "pyyyc/event_detail_card_snippet.html" with event=event %}
+  </div>
+  {% endfor %}
+</div>
+
+<div class="d-flex justify-content-center">
+  {% if next_year %}
+  <a href="{% url 'event-year-archive' next_year.year %}">
+    &lt; {{ next_year.year }}
+  </a>
+  {% endif %}
+  <span class="ml-3 mr-3">{{ year.year }}</span>
+  {% if previous_year %}
+  <a href="{% url 'event-year-archive' previous_year.year %}">
+    {{ previous_year.year }} &gt;
+  </a>
+</div>
+{% endif %} {% endblock %}
