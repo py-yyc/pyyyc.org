@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "dev-serve": "parcel serve base.scss"
+  },
   "dependencies": {
     "bootstrap": "^4.6.0",
     "parcel-bundler": "^1.12.5"

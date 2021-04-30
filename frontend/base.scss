@@ -9,6 +9,8 @@ $primary: #e03737;
 $enable-gradients: true;
 $enable-shadows: true;
 
+@include bg-gradient-variant(".bg-gradient-staff-tools", #abe88b, true);
+
 @import "~bootstrap/scss/_root";
 @import "~bootstrap/scss/_reboot";
 @import "~bootstrap/scss/_type";

@@ -14,12 +14,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 import datetime
-import re
 
 from django.conf import settings
 from django.urls import path, include, register_converter
 
-from pyyyc.views import EventDetail, EventYearArchive, EventMonthArchive, home
+from pyyyc.views import (
+    EventList,
+)
 
 
 class DateConverter:
@@ -36,14 +37,7 @@ class DateConverter:
 register_converter(DateConverter, "date")
 
 urlpatterns = [
-    path("", home),
-    path("<date:date>/", EventDetail.as_view(), name="event-detail"),
-    path("<int:year>/", EventYearArchive.as_view(), name="event-year-archive"),
-    path(
-        "<int:year>-<int:month>/",
-        EventMonthArchive.as_view(month_format="%m"),
-        name="event-month-archive",
-    ),
+    path("", EventList.as_view()),
 ]
 
 if settings.USE_DEBUG_TOOLBAR:

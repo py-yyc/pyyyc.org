@@ -1,16 +1,95 @@
 {% extends "pyyyc/base.html" %}
 <!-- -->
+{% load pyyyc_extras %}
+
+<!-- -->
 {% block body %}
-<div>
-  <ul>
-    {% for event in event_list %}
-    <li>
-      <a href="{{ object.get_absolute_url }}">{{ object.date }}</a>
-      {{ event.name }}
+<div class="row justify-content-center">
+  <div class="col-12 col-md-9 mt-4">
+    <h2>Welcome!</h2>
+    <div>
+      <p>
+        PyYYC is a monthly meetup where local people interested in the
+        <a href="https://wiki.python.org/moin/BeginnersGuide/NonProgrammers"
+          >Python programming language</a
+        >
+        get together to share Python tips, tricks, projects, and experiences;
+        and to socialize with fellow python users, learners, and experts.
+      </p>
+
+      <p>
+        This website is where we post slides and code from past meetups. You can
+        refresh your memory if you saw something neat, or, if you’re new here,
+        take a look around to see some of what we do at the meetup.
+      </p>
+
+      <p>
+        If you want to come to our next event, that’s all handled over at
+        <a href="https://meetup.com/py-yyc">meetup.com</a>.
+      </p>
+    </div>
+
+    <div>
+      {% for event in event_list %}
       <!-- -->
-      {% include "pyyyc/event_detail_card_snippet.html" %}
-    </li>
-    {% endfor %}
-  </ul>
+      {% ifchanged event.date.year %}
+      <div class="d-flex flex-row align-items-top">
+        <h2 class="mb-2">{{ event.date.year }}</h2>
+        <div class="ml-3 flex-grow-1">
+          <hr />
+        </div>
+      </div>
+      {% endifchanged %}
+      <div class="mb-5">
+        <h5 class="text-muted d-flex flex-row align-items-baseline">
+          <div class="small mr-2"><i>#{{ forloop.revcounter }}</i></div>
+          <div><i>{{ event.date|format:"%A, %B %e %Y" }}</i></div>
+        </h5>
+        {% with talks=event.talk_set %}
+        <div>
+          {% if talks.count %}
+          <div>
+            {% for talk in talks.all %}
+            <div class="mb-2">
+              <h4>
+                {{ talk.title }}
+                <span class="ml-1 text-muted font-italic small"
+                  >{{ talk.presenter }}</span
+                >
+              </h4>
+              {% if talk.description %}
+              <blockquote>{{ talk.description }}</blockquote>
+              {% endif %}
+              <!-- -->
+              {% if talk.slides_link %}
+              <a href="{{ talk.slides_link }}">Slides</a>
+              {% endif %}
+              <!-- -->
+              {% if talk.code_link %}
+              <a href="{{ talk.code_link }}">Code</a>
+              {% endif %}
+              <!-- -->
+              {% if talk.video_link %}
+              <a href="{{ talk.video_link }}">Video</a>
+              {% endif %}
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <h4>{{ event.name }}</h4>
+          <!-- -->
+          <small class="font-italic text-muted">
+            Talk details have not yet been entered, here is the original meetup
+            description:
+          </small>
+          {% include "pyyyc/event_detail_card_snippet.html" %}
+          <!-- -->
+          {% endif %}
+        </div>
+        {% endwith %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
 </div>
 {% endblock %}

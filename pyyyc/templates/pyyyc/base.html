@@ -12,7 +12,7 @@
   </head>
   <body>
     {% if user.is_staff %}
-    <nav class="navbar navbar-expand bg-gradient-dark text-white">
+    <nav class="navbar navbar-expand bg-gradient-staff-tools">
       <span class="navbar-text">Staff tools</span>
       <ul class="navbar-nav flex-grow-1">
         {% block staff_extra %} {% endblock %}
@@ -31,32 +31,29 @@
     </nav>
 
     <nav
-      class="navbar navbar-expand bg-gradient-secondary text-white align-items-baseline"
+      class="navbar navbar-expand-sm bg-gradient-dark text-white align-items-baseline"
     >
-      <span class="navbar-brand">
-        <a href="/">PyYYC</a>: Calgary’s monthly Python meetup
-        <!-- -->{% block navtitle %}{% endblock %}
+      <span>
+        <span class="navbar-brand mr-0">
+          <a href="/">PyYYC</a>
+        </span>
+        <span class="ml-none navbar-text">Calgary’s monthly Python meetup</span>
+        {% block navtitle %}{% endblock %}
       </span>
 
-      <ul class="navbar-nav flex-grow-1">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'event-year-archive' year=2021 %}"
-            >Slides and code</a
-          >
-        </li>
-
-        <li class="nav-item ml-auto">
+      <ul class="navbar-nav flex-grow-1-sm ml-sm-auto flex-row">
+        <li class="nav-item px-1">
           <a class="nav-link" href="https://meetup.com/py-yyc">Meetup</a>
         </li>
 
-        <li class="nav-item">
+        <li class="nav-item px-1">
           <a
             class="nav-link"
             href="https://www.youtube.com/channel/UCHmgKriEMwtnSHHCqrcKTJQ"
             >YouTube</a
           >
         </li>
-        <li class="nav-item">
+        <li class="nav-item px-1">
           <a class="nav-link" href="https://github.com/py-yyc">GitHub</a>
         </li>
       </ul>
@@ -65,7 +62,7 @@
     <nav class="navbar navbar-expand bg-gradient-light">
       <span class="nav-text">
         <a href="https://meetup.com/py-yyc">Join our meetup group</a> to RSVP
-        for our next meetup!
+        for the next meetup!
       </span>
     </nav>
 

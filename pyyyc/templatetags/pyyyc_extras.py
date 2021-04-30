@@ -3,6 +3,6 @@ from django import template
 register = template.Library()
 
 
-@register.filter
-def strftime(value, arg):
-    return value.strftime(arg)
+@register.filter(name="format")
+def format_(value, arg):
+    return format(value, arg)
