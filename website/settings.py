@@ -45,6 +45,8 @@ ALLOWED_HOSTS = []
 if DEBUG:
     INTERNAL_IPS = ["127.0.0.1"]
 
+    ALLOWED_HOSTS = ["localhost", "local.pyyyc.org"]
+
 
 # Application definition
 
@@ -90,6 +92,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "website.wsgi.application"
 
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_COLLAPSED": True,
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

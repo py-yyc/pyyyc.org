@@ -20,6 +20,7 @@ from django.urls import path, include, register_converter
 
 from pyyyc.views import (
     EventList,
+    view_artifact,
 )
 
 
@@ -38,6 +39,7 @@ register_converter(DateConverter, "date")
 
 urlpatterns = [
     path("", EventList.as_view()),
+    path("presentations/<date:date>/<file>", view_artifact),
 ]
 
 if settings.USE_DEBUG_TOOLBAR:

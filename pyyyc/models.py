@@ -39,11 +39,19 @@ class Presenter(models.Model):
         return self.name
 
 
+class TalkArtifact(models.Model):
+    name = models.CharField(max_length=100)
+    file = models.FileField()
+
+
 class Talk(models.Model):
     title = models.CharField(max_length=500)
     description = models.TextField(null=True, blank=True)
 
     slides_link = models.URLField(null=True, blank=True)
+    slides_media = models.ForeignKey(
+        TalkArtifact, null=True, blank=True, on_delete=models.PROTECT
+    )
     code_link = models.URLField(null=True, blank=True)
     blog_link = models.URLField(null=True, blank=True)
     video_link = models.URLField(null=True, blank=True)

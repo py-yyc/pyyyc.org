@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from django.views.generic import ListView, DetailView, YearArchiveView, MonthArchiveView
 
 from pyyyc.models import Event
@@ -33,3 +34,7 @@ class EventMonthArchive(MonthArchiveView):
     date_field = "date"
     make_object_list = True
     allow_future = True
+
+
+def view_artifact(request, date, file):
+    return render(request, "pyyyc/artifact_view.html")

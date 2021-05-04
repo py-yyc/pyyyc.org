@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin, TabularInline, StackedInline
 from django.db.models import Count
 
-from pyyyc.models import Event, Talk, Presenter
+from pyyyc.models import Event, Talk, Presenter, TalkArtifact
 
 
 class TalkInline(StackedInline):
@@ -83,3 +83,5 @@ class PresenterAdmin(ModelAdmin):
 
 
 admin.site.register(Presenter, PresenterAdmin)
+
+admin.site.register(TalkArtifact)
