@@ -47,6 +47,10 @@ if DEBUG:
 
     ALLOWED_HOSTS = ["localhost", "local.pyyyc.org"]
 
+    MEDIA_ROOT = BASE_DIR / "media"
+
+    MEDIA_URL = "media/"
+
 
 # Application definition
 
@@ -84,6 +88,7 @@ TEMPLATES = [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
+                "django.template.context_processors.media",
                 "django.contrib.messages.context_processors.messages",
             ],
         },
@@ -95,6 +100,8 @@ WSGI_APPLICATION = "website.wsgi.application"
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_COLLAPSED": True,
 }
+
+X_FRAME_OPTIONS = "SAMEORIGIN"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

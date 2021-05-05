@@ -1,0 +1,12 @@
+{% extends "pyyyc/base.html" %}
+<!-- -->
+{% block html_attributes %} class="pdf-page" {% endblock %}
+<!-- -->
+{% block body_attributes %} class="pdf-page" {% endblock %}
+<!-- -->
+{% block body_outer %}
+<h1>Document from meetup</h1>
+
+<iframe class="pdf-embed" src="{{ MEDIA_URL }}/PostgreSQL.pdf"> </iframe>
+
+{% endblock %}

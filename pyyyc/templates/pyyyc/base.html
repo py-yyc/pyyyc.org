@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html {% block html_attributes %}{% endblock %}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,7 +10,7 @@
     {% endif %}
     <title>{% block title %}PyYYC{% endblock %}</title>
   </head>
-  <body>
+  <body {% block body_attributes %} {% endblock %}>
     {% if user.is_staff %}
     <nav class="navbar navbar-expand bg-gradient-staff-tools">
       <span class="navbar-text">Staff tools</span>
@@ -67,6 +67,8 @@
     </nav>
 
     <!-- -->
+    {% block body_outer %}
     <div class="container">{% block body %} {% endblock %}</div>
+    {% endblock %}
   </body>
 </html>
