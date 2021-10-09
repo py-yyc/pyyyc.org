@@ -1,0 +1,17 @@
+##
+# Make links like /presentations/2017-09-28/metaclasses still render under
+# passenger, by adding a trailing slash, so long as index.html exists.
+#
+# Thanks https://stackoverflow.com/a/19618885/14558
+
+RewriteEngine On
+
+# if not an existing file
+RewriteCond %{REQUEST_FILENAME} !-f
+# and index.html exists
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}/index\.html -f
+# redirect to the physical page
+RewriteRule ^(.*)$ %{REQUEST_URI}/index.html [L,R]
+
+#
+##

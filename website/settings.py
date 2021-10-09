@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import json
-import environ
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -34,12 +33,14 @@ else:
         json.dumps({"SECRET_KEY": SECRET_KEY}, ensure_ascii=False, indent=2)
     )
 
+env_file = dotenv_values(BASE_DIR / ".env")
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env_file.get('DEBUG', False)
 
 USE_DEBUG_TOOLBAR = DEBUG
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["pyyyc.org"]
 
 
 if DEBUG:
@@ -108,8 +109,6 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-env_file = dotenv_values(BASE_DIR / ".env")
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
@@ -159,6 +158,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = "/static/"
+
+STATIC_ROOT = BASE_DIR / "public" / "static"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

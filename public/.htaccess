@@ -1,0 +1,4 @@
+# Make /index.html still serve up homepage now that it’s a python program
+# instead of a static HTML file.
+RewriteEngine on
+RewriteRule "^index\.html$" "/" [L,R]

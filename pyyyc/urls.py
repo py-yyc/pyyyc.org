@@ -39,6 +39,7 @@ register_converter(DateConverter, "date")
 
 urlpatterns = [
     path("", EventList.as_view()),
+    # artifact stuff is still a WIP
     path("presentations/<date:date>/<file>", view_artifact),
 ]
 

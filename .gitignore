@@ -2,3 +2,7 @@
 .env
 /db/
 /backups/
+
+*.pyc
+__pycache__/
+/.well-known/
