@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin, TabularInline, StackedInline
 from django.db.models import Count
+from django.forms import ModelForm, Textarea, TextInput, PasswordInput
 
 from pyyyc.models import Event, Talk, Presenter, TalkArtifact
 
@@ -13,8 +14,18 @@ class TalkInline(StackedInline):
     show_change_link = True
 
 
+# https://stackoverflow.com/questions/18738486/control-the-size-textarea-widget-look-in-django-admin
+class EventModelForm(ModelForm):
+    class Meta:
+        model = Event
+        exclude = []
+        widgets = {"meetup_api_json": Textarea(attrs={"readonly": "readonly"})}
+
+
 class EventAdmin(ModelAdmin):
-    list_display = ("name", "yyyymmdd", "talk_count")
+    form = EventModelForm
+    list_display = ("name", "yyyymmdd", "talk_count", "processed")
+    list_filter = ("processed",)
     inlines = [TalkInline]
 
     def yyyymmdd(self, obj):

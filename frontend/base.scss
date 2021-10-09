@@ -32,3 +32,11 @@ $enable-shadows: true;
   min-height: max(200px, 70vh);
   border: none;
 }
+
+.hover-link {
+  display: none;
+}
+
+.hover-container:hover .hover-link {
+  display: inherit;
+}
