@@ -10,8 +10,8 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 # and index.html exists
 RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}/index\.html -f
-# redirect to the physical page
-RewriteRule ^(.*)$ %{REQUEST_URI}/index.html [L,R]
+# append slash
+RewriteRule ^(.*)$ %{REQUEST_URI}/ [L,R]
 
 #
 ##
