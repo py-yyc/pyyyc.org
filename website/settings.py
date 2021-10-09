@@ -51,11 +51,20 @@ if DEBUG:
     MEDIA_ROOT = BASE_DIR / "media"
 
     MEDIA_URL = "media/"
+
+    # Allow embedding static assets with the development server.
+    X_FRAME_OPTIONS = "SAMEORIGIN"
 else:
     SECURE_HSTS_SECONDS = 86400 * 3
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
     SECURE_SSL_REDIRECT = True
+
     SESSION_COOKIE_SECURE = True
+
     CSRF_COOKIE_SECURE = True
+
     X_FRAME_OPTIONS = "DENY"
 
 # Application definition
@@ -108,8 +117,6 @@ WSGI_APPLICATION = "website.wsgi.application"
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_COLLAPSED": True,
 }
-
-X_FRAME_OPTIONS = "SAMEORIGIN"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
