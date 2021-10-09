@@ -46,7 +46,7 @@ ALLOWED_HOSTS = ["pyyyc.org"]
 if DEBUG:
     INTERNAL_IPS = ["127.0.0.1"]
 
-    ALLOWED_HOSTS = ["localhost", "local.pyyyc.org"]
+    ALLOWED_HOSTS = ["localhost", "local.pyyyc.org", "pyyyc-local"]
 
     MEDIA_ROOT = BASE_DIR / "media"
 

@@ -10,4 +10,4 @@ To install the mysql driver package, you’ll need the C mysql libraries availab
 
 ### Working on the frontend
 
-    cd frontend && npx parcel serve base.scss
+    cd frontend && yarn dev-serve

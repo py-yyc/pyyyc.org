@@ -13,17 +13,6 @@
     <title>{% block title %}PyYYC{% endblock %}</title>
   </head>
   <body {% block body_attributes %} {% endblock %}>
-    {% if user.is_staff %}
-    <nav class="navbar navbar-expand bg-gradient-staff-tools">
-      <span class="navbar-text">Staff tools</span>
-      <ul class="navbar-nav flex-grow-1">
-        {% block staff_extra %} {% endblock %}
-        <li class="nav-item ml-auto">
-          <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
-        </li>
-      </ul>
-    </nav>
-    {% endif %}
 
     <nav class="navbar navbar-expand bg-danger text-white">
       <i
@@ -44,6 +33,12 @@
       </span>
 
       <ul class="navbar-nav flex-grow-1-sm ml-sm-auto flex-row">
+        {% if user.is_staff %}
+        <li class="nav-item px-1 bg-primary">
+          <a class="nav-link text-light" href="{% url 'admin:index' %}">Admin</a>
+        </li>
+        {% endif %}
+
         <li class="nav-item px-1">
           <a class="nav-link" href="https://meetup.com/py-yyc">Meetup</a>
         </li>
