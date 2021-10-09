@@ -52,6 +52,8 @@ class Event(models.Model):
     meetup_id = models.CharField(
         max_length=20,
         unique=True,
+        blank=True,
+        null=True,
         help_text="Could be used to link to the Meetup website",
     )
     meetup_link_override = models.URLField(
@@ -62,7 +64,9 @@ class Event(models.Model):
         """,
     )
     meetup_api_json = models.TextField(
-        help_text="This can be auto-populated by an import script"
+        blank=True,
+        null=True,
+        help_text="This can be auto-populated by an import script",
     )
     hidden = models.BooleanField(
         default=False,
