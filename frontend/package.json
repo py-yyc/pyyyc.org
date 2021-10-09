@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "dev-serve": "parcel serve base.scss"
+    "dev-serve": "parcel serve base.scss",
+    "build": "parcel build base.scss"
   },
   "dependencies": {
     "bootstrap": "^4.6.0",

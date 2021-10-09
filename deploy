@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+from os import fspath
+from pathlib import Path
+from subprocess import check_call
+
+BASE_DIR = Path(__file__).parent
+
+DOMAIN = "pyyyc.org"
+
+
+def main():
+    parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
+    parser.add_argument(
+        "--remote",
+        default=f"{DOMAIN}/{DOMAIN}.git",
+        help="The git remote to push code to",
+    )
+    parser.add_argument(
+        "--host", default=DOMAIN, help="The hostname serving the web site"
+    )
+    parser.add_argument(
+        "--passenger-root",
+        default=DOMAIN,
+        help="The path to the passenger root folder on the web server",
+    )
+    args = parser.parse_args()
+
+    check_call(["yarn", "build"], cwd=BASE_DIR / "frontend")
+    check_call(["git", "push", args.remote])
+    check_call(
+        [
+            "rsync",
+            fspath(BASE_DIR / "frontend" / "dist" / "base.css"),
+            f"{args.host}:{args.passenger_root}/public/static",
+        ]
+    )
+    check_call(
+        [
+            "ssh",
+            args.host,
+            f"""
+                set -eu
+                set -xv
+                cd "{args.passenger_root}"
+
+                mkdir -p -m 0700 backups
+                # pipenv loads .env which has $MYSQL_DATABASE
+                BACKUP_FILE=backups/$(TZ=UTC date +%Y-%m-%d_%H%M%SZ).sql
+                # --no-tablespaces avoids a warning about missing PROCESS privileges
+                python3 -m pipenv run sh -c \\
+                    "mysqldump --no-tablespaces \\$MYSQL_DATABASE" > "$BACKUP_FILE"
+                gzip "$BACKUP_FILE"
+
+                git pull
+                python3 -m pipenv run ./manage.py migrate
+                python3 -m pipenv run ./manage.py check --deploy --fail-level=WARNING
+                touch tmp/restart.txt
+            """,
+        ]
+    )
+
+
+if __name__ == "__main__":
+    main()

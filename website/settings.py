@@ -36,7 +36,7 @@ else:
 env_file = dotenv_values(BASE_DIR / ".env")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env_file.get('DEBUG', False)
+DEBUG = env_file.get("DEBUG", False)
 
 USE_DEBUG_TOOLBAR = DEBUG
 
@@ -51,7 +51,12 @@ if DEBUG:
     MEDIA_ROOT = BASE_DIR / "media"
 
     MEDIA_URL = "media/"
-
+else:
+    SECURE_HSTS_SECONDS = 86400 * 3
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    X_FRAME_OPTIONS = "DENY"
 
 # Application definition
 
@@ -117,6 +122,7 @@ DATABASES = {
         "PORT": 3306,
         "USER": env_file["MYSQL_USER"],
         "PASSWORD": env_file["MYSQL_PASSWORD"],
+        "init_command": "SET sql_mode='STRICT_ALL_TABLES'",
     }
 }
 
