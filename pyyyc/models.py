@@ -3,6 +3,8 @@ from django.db import models
 from django.utils.safestring import mark_safe
 
 # A lot of this content was originally imported from the meetup API.
+from simple_history.models import HistoricalRecords
+
 SAFE_TAGS_FOR_DESCRIPTIONS = ["p", "br", "b", "i", "a", "img"]
 
 SAFE_ATTRIBUTES_FOR_DESCRIPTIONS = {"img": ["src"]}
@@ -78,6 +80,8 @@ class Event(models.Model):
         """,
     )
 
+    history = HistoricalRecords()
+
     def html_description(self):
         return sanitize_html(self.description)
 
@@ -100,6 +104,8 @@ class Event(models.Model):
 
 class Presenter(models.Model):
     name = models.CharField(max_length=50)
+
+    history = HistoricalRecords()
 
     class Meta:
         ordering = ["name"]
@@ -137,6 +143,8 @@ class Talk(models.Model):
 
     presenter = models.ForeignKey(Presenter, on_delete=models.PROTECT)
     event = models.ForeignKey(Event, on_delete=models.PROTECT)
+
+    history = HistoricalRecords()
 
     def html_description(self):
         return sanitize_html(self.description)

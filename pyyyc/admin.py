@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin, TabularInline, StackedInline
 from django.db.models import Count
 from django.forms import ModelForm, Textarea, TextInput, PasswordInput
+from simple_history.admin import SimpleHistoryAdmin
 
 from pyyyc.models import Event, Talk, Presenter, TalkArtifact
 
@@ -22,7 +23,7 @@ class EventModelForm(ModelForm):
         widgets = {"meetup_api_json": Textarea(attrs={"readonly": "readonly"})}
 
 
-class EventAdmin(ModelAdmin):
+class EventAdmin(SimpleHistoryAdmin):
     form = EventModelForm
     list_display = ("name", "yyyymmdd", "talk_count", "processed")
     list_filter = ("processed",)
@@ -43,7 +44,7 @@ class EventAdmin(ModelAdmin):
 admin.site.register(Event, EventAdmin)
 
 
-class TalkAdmin(ModelAdmin):
+class TalkAdmin(SimpleHistoryAdmin):
     list_display = (
         "presenter",
         "title",
@@ -80,7 +81,7 @@ class TalkSummaryInline(StackedInline):
         return False
 
 
-class PresenterAdmin(ModelAdmin):
+class PresenterAdmin(SimpleHistoryAdmin):
     list_display = ("name", "talk_count")
     inlines = [TalkSummaryInline]
 

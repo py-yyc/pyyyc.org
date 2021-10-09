@@ -7,6 +7,7 @@ name = "pypi"
 bleach = "*"
 django = "*"
 mysqlclient = "*"
+django-simple-history = "*"
 
 [dev-packages]
 black = "==21.4b0"
