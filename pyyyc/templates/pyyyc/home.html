@@ -119,8 +119,13 @@
           </div>
         </div>
         <!-- -->
-        {% if event.meetup_link %}<a href="{{ event.meetup_link }}"
-          >View on meetup.com</a
+        {% if event.video_link %}
+        <a href="{{ event.video_link }}">Video of meetup</a>
+        {% endif %}
+        <!-- -->
+        {% if event.meetup_link %}
+        <a class="float-right" href="{{ event.meetup_link }}"
+          >More details on meetup.com</a
         >{% endif %}
       </div>
       {% endfor %}

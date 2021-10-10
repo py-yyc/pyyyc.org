@@ -82,6 +82,13 @@ class Event(models.Model):
         null=True,
         help_text="This can be auto-populated by an import script",
     )
+    video_link = models.URLField(
+        null=True,
+        blank=True,
+        help_text="""
+            A link to a video of the entire meetup, as opposed to just one talk.
+        """,
+    )
     hidden = models.BooleanField(
         default=False,
         help_text="""
