@@ -82,7 +82,7 @@ class TalkSummaryInline(StackedInline):
 
 
 class PresenterAdmin(SimpleHistoryAdmin):
-    list_display = ("name", "talk_count")
+    list_display = ("name", "last_name", "talk_count")
     inlines = [TalkSummaryInline]
 
     def talk_count(self, obj):
