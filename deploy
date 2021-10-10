@@ -53,6 +53,8 @@ def main():
                 gzip "$BACKUP_FILE"
 
                 git pull
+                PIPENV_VENV_IN_PROJECT=1 python3 -m pipenv install --deploy
+                python3 -m pipenv clean
                 python3 -m pipenv run ./manage.py migrate
                 python3 -m pipenv run ./manage.py check --deploy --fail-level=WARNING
                 touch tmp/restart.txt

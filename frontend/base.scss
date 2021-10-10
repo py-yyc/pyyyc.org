@@ -40,3 +40,7 @@ $enable-shadows: true;
 .hover-container:hover .hover-link {
   display: inherit;
 }
+
+.card-text img {
+  max-width: 100%;
+}
