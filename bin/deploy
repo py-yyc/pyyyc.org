@@ -4,7 +4,7 @@ from os import fspath
 from pathlib import Path
 from subprocess import check_call
 
-BASE_DIR = Path(__file__).parent
+BASE_DIR = Path(__file__).parent.parent
 
 DOMAIN = "pyyyc.org"
 
@@ -46,7 +46,7 @@ def main():
 
                 git pull
 
-                ./backup
+                ./bin/backup
 
                 PIPENV_VENV_IN_PROJECT=1 python3 -m pipenv install --deploy
                 python3 -m pipenv clean

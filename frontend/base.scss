@@ -44,3 +44,9 @@ $enable-shadows: true;
 .card-text img {
   max-width: 100%;
 }
+
+.preamble, .postamble {
+  h1, h2, h3, h4, h5, h6 {
+    @extend .text-muted;
+  }
+}
