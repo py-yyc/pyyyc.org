@@ -18,7 +18,11 @@ class EventDetail(DetailView):
 
 class EventList(ListView):
     model = Event
-    queryset = Event.objects.filter(hidden=False).order_by("-date")
+    queryset = (
+        Event.objects.filter(hidden=False)
+        .order_by("-date")
+        .prefetch_related("talk_set", "talk_set__presenter")
+    )
     template_name = "pyyyc/home.html"
 
 
