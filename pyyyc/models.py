@@ -109,6 +109,15 @@ class Event(models.Model):
 class Presenter(models.Model):
     name = models.CharField(max_length=50)
 
+    last_name = models.CharField(
+        max_length=50,
+        default="",
+        help_text="""
+            Used in the admin for disambiguation; not currently displayed on the
+            website for privacy reasons.
+        """,
+    )
+
     history = HistoricalRecords()
 
     class Meta:
