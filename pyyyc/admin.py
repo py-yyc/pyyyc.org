@@ -1,7 +1,7 @@
 from django.contrib import admin
-from django.contrib.admin import ModelAdmin, TabularInline, StackedInline
+from django.contrib.admin import StackedInline
 from django.db.models import Count
-from django.forms import ModelForm, Textarea, TextInput, PasswordInput
+from django.forms import ModelForm, Textarea
 from simple_history.admin import SimpleHistoryAdmin
 
 from pyyyc.models import Event, Talk, Presenter, TalkArtifact

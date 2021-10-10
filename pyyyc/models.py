@@ -5,9 +5,22 @@ from django.utils.safestring import mark_safe
 # A lot of this content was originally imported from the meetup API.
 from simple_history.models import HistoricalRecords
 
-SAFE_TAGS_FOR_DESCRIPTIONS = ["p", "br", "b", "i", "a", "img"]
+SAFE_TAGS_FOR_DESCRIPTIONS = [
+    "p",
+    "br",
+    "hr",
+    "b",
+    "i",
+    "a",
+    "img",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+]
 
-SAFE_ATTRIBUTES_FOR_DESCRIPTIONS = {"img": ["src"]}
+SAFE_ATTRIBUTES_FOR_DESCRIPTIONS = {"img": ["src"], "a": ["href"]}
 
 
 def sanitize_html(raw_html):
@@ -16,6 +29,7 @@ def sanitize_html(raw_html):
             raw_html,
             tags=SAFE_TAGS_FOR_DESCRIPTIONS,
             attributes=SAFE_ATTRIBUTES_FOR_DESCRIPTIONS,
+            protocols=["https"],
         )
     )
 
