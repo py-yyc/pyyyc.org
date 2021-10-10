@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -eu
+
+DIR="$(dirname -- "${0}")"
+
+cd "${DIR}"
+
+function run_in_pipenv() {
+    if [ -z "${PIPENV_ACTIVE:-}" ]; then
+        python3 -m pipenv run "${@}"
+    else
+        "${@}"
+    fi
+}
+
+mkdir -p -m 0700 backups
+BACKUP_FILE=backups/$(TZ=UTC date +%Y-%m-%d_%H%M%SZ).sql
+
+# pipenv loads .env which has $MYSQL_DATABASE
+# --no-tablespaces avoids a warning about missing PROCESS privileges
+if run_in_pipenv sh -c \
+    'mysqldump --no-tablespaces $MYSQL_DATABASE' > "$BACKUP_FILE"
+then
+    : # Normally we’d write `if ! mysqldump …` but that eats the exit code
+else
+    RET="$?"
+    # Remove partial file, but show it first, as it can contain error messages
+    cat "${BACKUP_FILE}" 1>&2
+    rm -f "${BACKUP_FILE}"
+    echo "Backup failed! mysqldump exited with code $RET" 1>&2
+    exit "${RET}"
+fi
+
+gzip "$BACKUP_FILE"
+echo "Saved ${BACKUP_FILE}.gz"

@@ -44,15 +44,10 @@ def main():
                 set -xv
                 cd "{args.passenger_root}"
 
-                mkdir -p -m 0700 backups
-                # pipenv loads .env which has $MYSQL_DATABASE
-                BACKUP_FILE=backups/$(TZ=UTC date +%Y-%m-%d_%H%M%SZ).sql
-                # --no-tablespaces avoids a warning about missing PROCESS privileges
-                python3 -m pipenv run sh -c \\
-                    "mysqldump --no-tablespaces \\$MYSQL_DATABASE" > "$BACKUP_FILE"
-                gzip "$BACKUP_FILE"
-
                 git pull
+
+                ./backup
+
                 PIPENV_VENV_IN_PROJECT=1 python3 -m pipenv install --deploy
                 python3 -m pipenv clean
                 python3 -m pipenv run ./manage.py migrate
