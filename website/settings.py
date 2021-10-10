@@ -55,6 +55,9 @@ if DEBUG:
     # Allow embedding static assets with the development server.
     X_FRAME_OPTIONS = "SAMEORIGIN"
 else:
+    if env_file.get("ADMIN_EMAIL"):
+        ADMINS = [("Admin", env_file["ADMIN_EMAIL"])]
+
     SECURE_HSTS_SECONDS = 86400 * 3
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
