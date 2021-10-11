@@ -124,7 +124,7 @@ class Event(models.Model):
         return None
 
     def __str__(self):
-        return f"{self.date}: {self.name}"
+        return f"{'X ' if self.hidden else ''}{self.date}: {self.name}"
 
 
 class Presenter(models.Model):
@@ -133,6 +133,7 @@ class Presenter(models.Model):
     last_name = models.CharField(
         max_length=50,
         default="",
+        blank=True,
         help_text="""
             Used in the admin for disambiguation; not currently displayed on the
             website for privacy reasons.
@@ -174,8 +175,12 @@ class Talk(models.Model):
     code_link = models.URLField(null=True, blank=True)
     blog_link = models.URLField(null=True, blank=True)
     video_link = models.URLField(null=True, blank=True)
-
-    presenter = models.ForeignKey(Presenter, on_delete=models.PROTECT)
+    # A manual through model can have a better admin display than
+    # `Talk-presenter relationship: Talk_presenters object (32)`, but requires
+    # extra work to make it inline.
+    #
+    # Might be needed if wanting to allow manual presenter order for a talk.
+    presenters = models.ManyToManyField(Presenter, related_name="talks")
     event = models.ForeignKey(Event, on_delete=models.PROTECT)
 
     history = HistoricalRecords()
@@ -187,5 +192,9 @@ class Talk(models.Model):
     def date(self):
         return self.event.date
 
+    @property
+    def presenter_list(self):
+        return ", ".join(p.name for p in self.presenters.all())
+
     def __str__(self):
-        return f"{self.title}, {self.presenter.name} {self.event.date}"
+        return f"{self.title}, {self.presenter_list} {self.event.date}"

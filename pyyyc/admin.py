@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib.admin import StackedInline
 from django.db.models import Count
 from django.forms import ModelForm, Textarea
+from django.urls import reverse
+from django.utils.html import format_html
 from simple_history.admin import SimpleHistoryAdmin
 
 from pyyyc.models import Event, Talk, Presenter, TalkArtifact
@@ -46,32 +48,50 @@ admin.site.register(Event, EventAdmin)
 
 class TalkAdmin(SimpleHistoryAdmin):
     list_display = (
-        "presenter",
         "title",
         "date",
+        "presenter_list",
         "description",
         "has_slides_link",
         "has_code_link",
     )
 
+    @admin.display(description="Code?", boolean=True)
     def has_code_link(self, obj):
         return bool(obj.code_link)
 
-    has_code_link.short_description = "Code?"
-
+    @admin.display(description="Slides?", boolean=True)
     def has_slides_link(self, obj):
         return bool(obj.code_link)
 
-    has_slides_link.short_description = "Slides?"
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("event", "presenters")
 
 
 admin.site.register(Talk, TalkAdmin)
 
 
 class TalkSummaryInline(StackedInline):
-    model = Talk
-    fields = ("title", "date", "description")
-    readonly_fields = ("title", "date", "description")
+    def info(self, obj):
+        edit_url = reverse("admin:pyyyc_talk_change", args=[obj.id])
+
+        return format_html(
+            "<a href={url}>{date}</a> {title}",
+            url=edit_url,
+            date=obj.talk.event.date,
+            title=obj.talk.title,
+        )
+
+    @admin.display(description="description")
+    def description(self, obj):
+        return obj.talk.description
+
+    model = Presenter.talks.through
+    fields = (
+        "info",
+        "description",
+    )
+    readonly_fields = fields
     extra = 0
 
     can_delete = False
@@ -79,6 +99,11 @@ class TalkSummaryInline(StackedInline):
 
     def has_add_permission(self, request, obj):
         return False
+
+    def get_queryset(self, request):
+        return (
+            super().get_queryset(request).prefetch_related("talk__event", "presenter")
+        )
 
 
 class PresenterAdmin(SimpleHistoryAdmin):
@@ -90,10 +115,8 @@ class PresenterAdmin(SimpleHistoryAdmin):
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
-        queryset = queryset.annotate(talk_count=Count("talk"))
+        queryset = queryset.annotate(talk_count=Count("talks"))
         return queryset
 
 
 admin.site.register(Presenter, PresenterAdmin)
-
-admin.site.register(TalkArtifact)

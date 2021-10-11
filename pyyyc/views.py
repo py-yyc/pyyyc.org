@@ -21,7 +21,7 @@ class EventList(ListView):
     queryset = (
         Event.objects.filter(hidden=False)
         .order_by("-date")
-        .prefetch_related("talk_set", "talk_set__presenter")
+        .prefetch_related("talk_set", "talk_set__presenters")
     )
     template_name = "pyyyc/home.html"
 
