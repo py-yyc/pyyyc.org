@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title</title>
+    <meta charset="utf-8">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: 400;
+      }
+
+      .upper-title {
+	 font-size: 20px;
+      }
+
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+
+      /*
+      .remark-slide-content h1 {
+         color: red;
+	 font-size: 35px;
+      }
+      */
+
+      code {
+        border-radius: 5px;
+      }
+
+      .footnote {
+       font-size: 60%;
+       position: absolute;
+       bottom: 1em;
+       right: 10em;
+      }
+
+      .agenda > ul > li {
+        padding-bottom: 1em;
+      }
+
+      .agenda > ul > li > ul > li > ul > li {
+        font-size: 80%;
+      }
+
+      .navbar {
+        width: 100%;
+	background-color: #9AC5EF;
+        position: absolute;
+	top: 0;
+	left: 0;
+      }
+      .navbarleft {
+        float: left;
+      }
+      .navbarright {
+        float: right;
+      }
+      .navbarright a {
+        text-decoration: none;
+        float: right;
+      }
+
+      .smallfrom {
+      	 font-size: 60%;
+      }
+
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle
+
+# Tips for effective command-line utilities <br/> in Python
+
+Assaf Gordon
+<br/>
+[PyYYC](https://pyyyc.org)
+<br/>
+October 26th, 2017
+---
+
+layout: true
+
+.navbar[.navbarleft[{{topic}}]  .navbarright[[<i class="fa fa-twitter" aria-hidden="true"></i>@AGordonX](https://twitter.com/AGordonX)]]
+
+---
+
+topic: Introduction
+
+# "Command line" ?
+
+* Many names: shell / terminal / console / CLI
+  <br/>
+  <small>(ignoring the different meanings for now)</small>
+
+- simple examples:
+
+    ```sh
+    ls -l
+    git clone https://github.com/agordon/datamash
+    rm *.pyc
+    cp -r *.jpg /home/goron/picturesX
+    ```
+
+- less-simple examples:
+
+    ```sh
+    ls -lh --ignore="*.bak" --group-directories-first --sort=version /home/gordon
+    ```
+
+    ```sh
+    sort -k1Vr,1 -k2n,2 -S 10G --stable --parallel=8 -o sorted.txt  genes.txt
+    ```
+
+---
+
+topic: Introduction
+
+# Command line - common scenarios
+
+- one-off scripts
+  - personal use
+  - no GUI
+
+- research
+  - find-matches.py --max-depth=10 'user@example.com'
+
+- in-house scripts (database, panda, aws)
+  - set-storage-type.py --dry-run --verbose --type=infrequent --age=30
+  - fail2ban --remove 43.55.184.99
+
+- automation
+  - part of a bigger pipeline
+  - part of a long job queue
+
+---
+
+topic: Introduction
+
+# Command line - common themes
+
+- no GUI (obviously...)
+- Input: files / databases / etc.
+- Tweaking: Command-line parameters (e.g. `--sort=size`)
+- Output: files ( screen / database / etc. )
+- Errors: typically printed on the screen (stderr) + exit code
+- Reusable
+   - more than one time
+   - more than one input/output
+   - more than one user
+
+- Alternatives:
+    - GUI (e.g. using [PyQT](https://riverbankcomputing.com/news),
+        [pygames](https://www.pygame.org/))
+    - TUI (e.g. using python's [curses](https://docs.python.org/2/howto/curses.html#curses-howto) module)
+    - Web applications (e.g. using [flask](http://flask.pocoo.org/),
+        [Django](https://www.djangoproject.com/))
+    - Libaries/Packages
+      <br/>
+      <small>(leaving user-interface decisions to antoher developer)</small>
+---
+
+topic:
+
+# Agenda
+
+.footnote[Advanced topic will be mention in passing, time permitting
+<br/>(otherwise we'll be here all night)]
+
+.agenda[
+- Parameter handling
+    - the *wrong* way (hard-coding, `sys.argv`)
+    - using `argparse`
+         - help screens
+         - boolean / int / string parameters
+         - required / default values
+         - multiple choices
+- Error handling
+    - useful vs. not-so-useful python error messages
+    - Unhelpful python errors
+    - Anatomy of a useful error message
+    - Failing Helpfully
+        - `sys.exit`
+        - custom exception class
+- Advanced topics
+    - parameters parsing:
+        - list parameters; mutilple files; shell globbing; on/off features;
+	  version; configfile; sub commands;
+    - error handling:
+        - python I/O pitfalls; Exit codes, Standard Error, unix pipes; program name;
+]
+
+---
+
+topic: Parameter Handling
+
+# Parameter Handling - Examples
+
+Input:
+
+```sh
+head file.txt
+git clone https://git.savannah.gnu.org/sed.git
+
+dna-land-show-user-info.py "joe@example.com"
+```
+
+Output:
+
+```sh
+cp *.jpg /home/gordon/backups/
+
+dna-land-generate-user-reports.py report.pdf
+```
+
+Modifying program's operation:
+
+```sh
+tail -n 1 /var/log/auth.log
+ls -lhtr /etc/
+psql -U gordon -d DNALAND -t -A -c "SELECT count(*) from USERS"
+
+dna-land-generate-user-reports.py --joined-after=2017-05-12 report.pdf
+```
+---
+
+topic: Parameter Handling
+
+# Handling Parameters **the wrong way**
+
+Hard-coding configuration variables:
+
+```python
+import os,sys,re
+# Set input file and desired gene. change as needed...
+input = "/data/users/gordon/projects/IK4/try2/list-id.sorted.txt"
+gene = "HOXA1"
+```
+
+Or worse, hard-coding function parameters:
+
+```python
+from urllib2 import urlopen
+
+[ ... 2361 lines of code and then ... ]
+
+def get_candidate_gene_list():
+    data = urlopen("https://files.cshl.edu/~gordon/IK5/samples7.txt")
+    for line in data.readlines():
+        if not line.startswith("HOXA1"):
+            continue
+        ...
+```
+
+
+
+---
+
+topic: Parameter Handling
+
+
+# Handling Parameters **the wrong way**
+
+Using `sys.argv` for command-line parameters:
+
+```python
+import sys
+
+gene = sys.argv[1]
+input = sys.argv[2]
+min_samp = int(sys.argv[3])
+output = sys.argv[4]
+```
+
+In six months, would I remember that parameters' order?
+
+"Of course! why wouldn't I remember...
+<small>(and what is `min_samp` anyhow?)</small>"
+
+
+---
+
+topic: Parameter Handling
+
+# Handling Parameters **the wrong way**
+
+Using `sys.argv` for command-line parameters:
+
+```python
+import sys
+
+xxxx = sys.argv[1]
+xxxx  = sys.argv[2]
+xxxx     = int(sys.argv[3])
+xxxx   = sys.argv[4]
+```
+
+Was it `input file, output file, gene name, min_samp` ?
+
+```python
+*$ python myscript.py  samples.txt  output.pdf  hoxa1  10
+
+Traceback (most recent call last):
+  File "myscript.py", line 5, in <module>
+      min_samp = int(sys.argv[3])
+ValueError: invalid literal for int() with base 10: 'hoxa1'
+```
+
+Uh, I guess not...
+
+---
+
+topic: Parameter Handling
+
+# Handling Parameters **the wrong way**
+
+Using `sys.argv` for command-line parameters:
+
+```python
+import sys
+
+xxxx = sys.argv[1]
+xxxx  = sys.argv[2]
+xxxx     = int(sys.argv[3])
+xxxx   = sys.argv[4]
+```
+
+Let's see the basic help screen:
+
+```python
+*$ python myscript.py --help
+
+Traceback (most recent call last):
+  File "myscript.py", line 4, in <module>
+      input = sys.argv[2]
+IndexError: list index out of range
+```
+
+Hmm... not so friendly.
+
+---
+
+topic: Parameter Handling
+
+# `argparse` package
+
+```python
+from argparse import ArgumentParser
+
+*ap = ArgumentParser()
+*ap.add_argument('filename') # Accept one argument
+*args = ap.parse_args()
+
+print "Requested file:",args.filename
+```
+
+Usage:
+
+```sh
+*$ python argparse1.py foo.txt
+Requested file: foo.txt
+```
+
+---
+
+topic: Parameter Handling
+
+# `argparse` package
+
+```python
+from argparse import ArgumentParser
+
+ap = ArgumentParser()
+ap.add_argument('filename')
+args = ap.parse_args()
+
+print "Requested file:",args.filename
+```
+
+Missing parameters and help screen:
+
+```sh
+$ python argparse1.py
+*usage: argparse1.py [-h] filename
+*argparse1.py: error: too few arguments
+```
+
+```sh
+*$ python argparse1.py -h
+
+usage: argparse1.py [-h] filename
+
+positional arguments:
+  filename
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
+
+---
+
+topic: Parameter handling
+
+# Help screens - `help`,`metavar`
+
+Help screens are only as good as you make them. Make them better!
+
+.footnote[Obligatory xkcd: <https://xkcd.com/1692/>]
+
+Add `help`,`metavar` for each parameter:
+
+```python
+from argparse import ArgumentParser
+
+ap = ArgumentParser()
+ap.add_argument('filename',     # python variable name
+*                help="Input CSV file. Expected fields: gene name, sample name",
+*                metavar="CSV"  # help screen variable name
+               )
+args = ap.parse_args()
+print "Requested file:",args.filename
+```
+
+Result:
+
+```sh
+$ python argparse2.py -h
+usage: argparse2.py [-h] CSV
+
+positional arguments:
+*  CSV         Input CSV file. Expected fields: gene name, patient ID
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
+
+---
+
+topic: Parameter handling
+
+# Help screens - `description`,`epilog`
+
+.footnote[Obligatory xkcd: <https://xkcd.com/1168/>]
+
+Add `description`,`epilog` to the `ArgumentParser` object:
+
+```python
+from argparse import ArgumentParser,RawDescriptionHelpFormatter
+
+ap = ArgumentParser(
+*    description="Candidate Gene Detection for IK4 project",
+*    formatter_class=RawDescriptionHelpFormatter,
+*    epilog="""
+*
+*This program reads a CSV file with two fields (gene name, patient ID) and prints
+*the output of possible candidate genes matching the IK4 project criteria.
+*
+*Example CSV files available at https://example.com/IK4/samples
+*To learn more about the IK4 project visit https://examples.com/IK4/
+*Send questions and bug reports to joe@example.com
+*
+*Usage example:
+*    $ wget https://example.com/IK4/samples/1.csv
+*    $ %(prog)s 1.csv > out.txt
+""")
+
+ap.add_argument('filename',
+                help="Input CSV file. Expected fields: gene name, sample name",
+                metavar="CSV")
+
+args = ap.parse_args()
+print "Requested file:",args.filename
+```
+
+
+---
+
+topic: Parameter handling
+
+# Help screens - `description`,`epilog`
+
+Result (with `description` and `epilog`):
+
+```sh
+*$ python arparse3.py --help
+
+usage: arparse3.py [-h] CSV
+
+Candidate Gene Detection for IK4 project
+
+positional arguments:
+  CSV         Input CSV file. Expected fields: gene name, sample name
+
+optional arguments:
+  -h, --help  show this help message and exit
+
+      This program reads a CSV file with two fields (gene name, patient ID) and prints
+the output of possible candidate genes matching the IK4 project criteria.
+
+Example CSV files available at https://example.com/IK4/samples
+To learn more about the IK4 project visit https://examples.com/IK4/
+Send questions and bug reports to joe@example.com
+
+Usage example:
+    $ wget https://example.com/IK4/samples/1.csv
+    $ arparse3.py 1.csv > out.txt
+```
+
+
+
+---
+
+topic: Parameter handling
+
+# Accepting boolean flags
+
+```python
+from argparse import ArgumentParser
+ap = ArgumentParser() #description,epilog omitted for brevity
+
+*ap.add_argument('-q', '--quiet', action="store_true",
+*                help="suppress informational messages")
+
+ap.add_argument('filename') #help,metavar omitted for brevity
+args = ap.parse_args()
+*if not args.quiet:
+*    print "Requested file:",args.filename
+```
+
+Result:
+
+```sh
+python argparse4.py --quiet foo.csv
+```
+
+```sh
+$ python argparse4.py -h
+
+*usage: argparse4.py [-h] [-q] filename
+
+positional arguments:
+  filename
+
+optional arguments:
+  -h, --help   show this help message and exit
+* -q, --quiet  suppress informational messages
+```
+
+
+---
+
+topic: Parameter handling
+
+# Accepting numeric values
+
+
+Adding `--max-age` with `type=int` parameter:
+
+```python
+from argparse import ArgumentParser
+ap = ArgumentParser() #description,epilog omitted for brevity
+
+*ap.add_argument('-m','--max-age', type=int,
+*               metavar="AGE",
+*               help="Maximum patient age " \
+*                    "(samples of older users will be ignored)")
+
+ap.add_argument('-q', '--quiet', action="store_true",
+                help="suppress informational messages")
+
+ap.add_argument('filename') #help,metavar omitted for brevity
+args = ap.parse_args()
+
+if not args.quiet:
+    print "Requested file:",args.filename
+
+*   if args.max_age:
+*      print "All patient samples included"
+*   else:
+*      print "Ignoring samples of users older than",args.max_age,"years"
+```
+
+---
+
+topic: Parameter handling
+
+# Accepting numeric values (2)
+
+Adding `--max-age` with `type=int` parameter:
+
+```python
+ap.add_argument('-m','--max-age', type=int, metavar="AGE",
+                help="Maximum patient age " \
+                     "(samples of older users will be ignored)")
+```
+
+Result:
+
+```sh
+$ python argparse5.py -h
+
+usage: argparse5.py [-h] [-m AGE] [-q] CSV
+
+positional arguments:
+  filename
+
+optional arguments:
+  -h, --help            show this help message and exit
+* -m AGE, --max-age AGE
+*                       Maximum user age (samples of older users will be
+*                       ignored)
+  -q, --quiet           suppress informational messages
+
+```
+
+
+
+
+---
+
+topic: Parameter handling
+
+# Accepting numeric values (3)
+
+
+Adding `--max-age` with `type=int` parameter:
+
+```python
+ap.add_argument('-m','--max-age', type=int, metavar="AGE",
+                help="Maximum patient age " \
+                     "(samples of older users will be ignored)")
+```
+
+Result:
+
+```sh
+$ python argparse5.py 1.csv
+Requested file: 1.csv
+All patient samples included
+```
+
+```sh
+$ python argparse5.py -m 5 1.csv
+Requested file: 1.csv
+Ignoring samples of users older than 5 years
+```
+
+```sh
+$ python argparse5.py --max-age 45 1.csv
+Requested file: 1.csv
+Ignoring samples of users older than 45 years
+```
+
+```sh
+$ python argparse5.py --max-age foo 1.csv
+argparse5.py: error: argument -m/--max-age: invalid int value: 'foo'
+```
+
+---
+
+topic: Parameter handling
+
+# Accepting string (text) values
+
+Argument without `type` (or `type=str`, the default) is a text argument:
+
+```python
+ap.add_argument('-n','--experiment-name',
+                metavar="NAME",
+                help="Experiment name, used in the title of the output report")
+
+[... and later ...]
+
+print "Experiment:", args.experiment_name
+```
+
+Result:
+
+```sh
+$ python argparse6.py
+
+usage: argparse6.py [-h] [-m AGE] [-n NAME] [-q] filename
+```
+
+```sh
+$ python argparse6.py -n TREATMENT 1.csv
+
+Requested file: 1.csv
+All patient samples included
+Experiment name: TREATMENT
+```
+
+---
+
+topic: Parameter handling
+
+# Required parameters
+
+In the previous example, If the user did not specify `-n FOO` then the
+variable `args.experiment_name` will be `None`.
+
+To require it add `required=True`:
+
+```python
+ap.add_argument('-n','--experiment-name',
+                metavar="NAME",
+*               required=True,
+                help="Experiment name, used in the title of the output report")
+```
+
+Result:
+
+```sh
+$ python argparse7.py 1.csv
+
+*usage: argparse7.py [-h] [-m AGE] -n NAME [-q] filename
+*argparse7.py: error: argument -n/--experiment-name is required
+```
+
+---
+
+topic: Parameter handling
+
+# Default values
+
+Instead of requiring a parameter, you can specify a default value:
+
+```python
+ap.add_argument('-n','--experiment-name',
+                metavar="NAME",
+*               default="EXPRIMENT1",
+                help="Experiment name, used in the title of the output report "\
+*                    "(default: '%(default)s')")
+```
+
+Result:
+
+```sh
+$ python argparse8.py -h
+usage: argparse8.py [-h] [-m AGE] [-n NAME] [-q] filename
+
+positional arguments:
+  filename
+
+optional arguments:
+ -h, --help            show this help message and exit
+ -m AGE, --max-age AGE
+                       Maximum patient age (samples of older patients will be
+                       ignored)
+ -n NAME, --experiment-name NAME
+                       Experiment name, used in the title of the output
+*                      report (default: 'EXPERIMENT1')
+ -q, --quiet           suppress informational messages
+```
+
+---
+
+topic: Parameter handling
+
+# Limited choices
+
+Use `choices=[]` to accept specific values:
+
+```python
+ap.add_argument('--model',
+*               choices=["knight2001","zhang2014","lechner2009"],
+                default="knight2001",
+                help="Statistical model to use for gene estimation" \
+                     " (default: %(default)s)")
+```
+
+Result:
+
+```sh
+$ python argparse9.py
+
+usage: argparse9.py [-h] [-m AGE] [-n NAME]
+*                   [--model {knight2001,zhang2014,lechner2009}] [-q]
+                    filename
+```
+
+```sh
+$ python argparse9.py --model foobar
+
+argparse9.py: error: argument --model: invalid choice: 'foobar'
+                     (choose from 'knight2001', 'zhang2014', 'lechner2009')
+```
+
+---
+
+topic:
+
+# Agenda
+
+.footnote[Advanced topic will be mention in passing, time permitting
+<br/>(otherwise we'll be here all night)]
+
+.agenda[
+- Parameter handling
+    - the *wrong* way (hard-coding, `sys.argv`)
+    - using `argparse`
+         - help screens
+         - boolean / int / string parameters
+         - required / default values
+         - multiple choices
+- Error handling
+    - useful vs. not-so-useful python error messages
+    - Unhelpful python errors
+    - Anatomy of a useful error message
+    - Failing Helpfully
+        - `sys.exit`
+        - custom exception class
+- Advanced topics
+    - parameters parsing:
+        - list parameters; mutilple files; shell globbing; on/off features;
+	  version; configfile; sub commands;
+    - error handling:
+        - python I/O pitfalls; Exit codes, Standard Error, unix pipes; program name;
+]
+
+---
+
+topic: Error Handling
+
+# Error Handling
+
+Is this a useful error message?
+
+```python
+$ python run_analysis.py --samples-list=experiemnt1.txt \
+                         --candidates=genes.txt --use-pca --verbose
+
+Traceback (most recent call last):
+  File "run_analysis.py", line 2949, in <module>
+    process_file()
+  File "run_analysis.py", line 2696, in process_file
+    set_coefficients()
+  File "run_analysis.py", line 1382, in set_coefficients
+    pca.build_pca()
+  File "pca.py", line 54, in build_pca
+    retall=False)
+  File "/usr/lib/python2.7/dist-packages/scipy/optimize/optimize.py", line 793, in fmin_bfgs
+    res = _minimize_bfgs(f, x0, args, fprime, callback=callback, **opts)
+  File "/usr/lib/python2.7/dist-packages/scipy/optimize/optimize.py", line 882, in _minimize_bfgs
+    callback(xk)
+  File "pca.py", line 34, in callbackF
+    x_p1 = coefs[z]
+KeyError: 'GM12878'
+```
+
+
+--
+
+Useful for **whom** ?
+
+
+
+---
+topic:
+class: center, middle
+
+## Exceptions are for *developers*, not for *users*
+
+## Exceptions are for *bugs*, not for *usage errors*
+
+---
+topic: Error Handling
+
+# Error Handling
+
+Is this a useful error message?
+
+```python
+$ python run_analysis.py --samples-list=experiemnt1.txt \
+                         --candidates=genes.txt --use-pca --verbose
+
+Traceback (most recent call last):
+  File "run_analysis.py", line 2949, in <module>
+    process_file()
+  File "run_analysis.py", line 2696, in process_file
+    set_coefficients()
+  File "run_analysis.py", line 1382, in set_coefficients
+    pca.build_pca()
+  File "pca.py", line 54, in build_pca
+    retall=False)
+  File "/usr/lib/python2.7/dist-packages/scipy/optimize/optimize.py", line 793, in fmin_bfgs
+    res = _minimize_bfgs(f, x0, args, fprime, callback=callback, **opts)
+  File "/usr/lib/python2.7/dist-packages/scipy/optimize/optimize.py", line 882, in _minimize_bfgs
+    callback(xk)
+  File "pca.py", line 34, in callbackF
+    x_p1 = coefs[z]
+KeyError: 'GM12878'
+```
+
+Useful for the *developer* when debugging (or for the user if reporting a bug).
+
+**not** useful for the user if they used the program incorrectly (or bad input).
+
+---
+
+topic: Error Handling
+
+# Proverbial Input Processing
+
+With this input file, what are the total scores for each user?
+
+```txt
+user1   188
+user1   183
+user2   820
+user2   692
+user1   696
+user1   680
+user2   748
+...
+```
+
+One possible python method:
+
+```python
+[...]
+data = [x.strip().split() for x in open(args.filename).readlines()]
+# data = [  ['user1', '188'],  ['user1', '183'], ... ]
+
+sums = defaultdict(int)  # dict with default value of int(0)
+
+for user,value in data:
+    sums[user] += int(value)
+
+for user,value in sums.iteritems():
+    print user," = ", value
+```
+
+---
+
+topic: Error Handling
+
+# Proverbial Input Processing (2)
+
+Many methods to process valid input:
+
+```sh
+$ awk '{a[$1]+=$2};END{for(u in a){print u,a[u]}}' input1.txt
+user1 1764
+user2 3844
+
+$ datamash --sort groupby 1 sum 2 < input1.txt
+user1   1764
+user2   3844
+
+$ python sums.py input1.txt
+user2  =  3844
+user1  =  1764
+```
+
+---
+topic: Error Handling
+
+# Invalid usage - missing files
+
+How are missing files handled ?
+
+```sh
+$ awk '{a[$1]+=$2};END{for(u in a){print u,a[u]}}' no-such-file.txt
+awk: fatal: cannot open file `no-such-file.txt' for reading \
+                                (No such file or directory)
+```
+
+```sh
+$ datamash --sort groupby 1 sum 2 < no-such-file.txt
+-bash: no-such-file.txt: No such file or directory
+```
+
+```sh
+$ python sums.py no-such-file.txt
+Traceback (most recent call last):
+  File "sums.py", line 5, in <module>
+    data = [x.strip().split() for x in open(filename).readlines()]
+IOError: [Errno 2] No such file or directory: 'no-such-file.txt'
+```
+
+There is *no* problem (i.e. bug) in the python code.
+
+The stacktrace does not help the user in this case.
+<br/><small>(And the longer the stack trace, the less useful it is to the user in this case.)</small>
+
+---
+
+topic: Error Handling
+
+# Invalid Input (1)
+
+How are missing values in the file handled?
+
+```
+[ ... invalid input in line 19313 ... ]
+user1   188
+user1   183
+*user2
+user2   692
+user1   696
+[ ... ]
+```
+
+```sh
+$ python sums.py input2.txt
+Traceback (most recent call last):
+  File "sums.py", line 6, in <module>
+    sums = {user:0 for user,value in data}
+  File "sums.py", line 6, in <dictcomp>
+    sums = {user:0 for user,value in data}
+*ValueError: need more than 1 value to unpack
+```
+
+Is this helpful to the user?
+
+---
+
+topic: Error Handling
+
+# Invalid Input (2)
+
+How are too many values in the file handled?
+
+```
+[ ... invalid input in line 19313 ... ]
+user1   188
+user1   183
+*user2   132   user2   692
+user1   696
+user1   432
+[ ... ]
+```
+
+```sh
+$ python err2.py input3.txt
+Traceback (most recent call last):
+  File "sums.py", line 6, in <module>
+    sums = {user:0 for user,value in data}
+  File "sums.py", line 6, in <dictcomp>
+    sums = {user:0 for user,value in data}
+*ValueError: too many values to unpack
+```
+
+Is this helpful to the user?
+
+---
+
+topic: Error Handling
+
+# Invalid Input (3)
+
+How are empty lines in the file handled?
+
+```
+[ ... ]
+user1   188
+user1   183
+*
+user2   692
+user1   696
+[ ... ]
+```
+
+
+```sh
+$ python sums.py input4.txt
+Traceback (most recent call last):
+  File "sums.py", line 6, in <module>
+    sums = {user:0 for user,value in data}
+  File "sums.py", line 6, in <dictcomp>
+    sums = {user:0 for user,value in data}
+*ValueError: need more than 0 values to unpack
+```
+
+Is this helpful to the user?
+
+---
+
+topic: Error Handling
+
+# Invalid Input (4)
+
+How are non-numeric values handled ?
+
+```
+[ ... ]
+user1   188
+user1   183
+*user2   user1   696
+user1   492
+user1   534
+[...]
+```
+
+```sh
+$ python sums.py input5.txt
+Traceback (most recent call last):
+  File "sums.py", line 8, in <module>
+      data[user] += int(value)
+*ValueError: invalid literal for int() with base 10: 'user1'
+```
+
+Is this helpful to the user?
+
+---
+
+topic: Error Handling
+
+.center[
+![You're Holding it Wrong](wrong.jpg)
+<br/>
+.smallfrom[(from: http://youreholdingitwrong.org)]
+
+Even if the user is ultimately to blame for incorrect usage or faulty input,
+
+Do not add to the frustration by being obtuse or unhelpful.
+
+Remember the times you struggled with a undecipherable error message...
+]
+
+???
+
+This applies not only to I/O errors,
+
+but also to any run time constraits (e.g. invalid coeeficients,
+some invalidated assumptions, zeroed operand, Networking error, etc.)
+
+---
+
+topic: Error Handling
+
+# Anatomy of a Useful error message
+
+.footnote[Disclaimer: I wrote [GNU Datamash](https://www.gnu.org/software/datamas),
+specifically for robust automation pipelines]
+
+Example of a useful error message:
+
+```sh
+$ datamash --sort groupby 1 sum 2 < input3.txt
+datamash: invalid input: field 2 requested, line 7 has only 1 fields
+```
+
+Components of a useful error message:
+
+* program name: `datamash`
+
+* Immediate cause: `invalid input`
+
+* Location of erronous input: `line 7`
+
+* Detailed cause: `field 2 requested line 7 has only 1 field`
+
+* Also recommended: Input name (file, database, table, etc.)
+
+???
+
+* program name (`datamash`)
+  .errmsgexp[
+   importang in complex pipelines
+   which run many programs, all printing errors to STDERR.]
+
+
+*  Immediate cause: `invalid input`.
+   .errmsgexp[
+   Clearly indicates to the user what the origin
+   of the problem (It's not a memory problem, file permission problem,
+   etc.)]
+
+*  Location of erronous input: `line 7`:
+   .errmsgexp[
+   If the user needs to troubleshoot and fix this issue, they will anyhow
+   need to find the problematic location. This usually leads to
+   time-consuming and frustrating divide-and-conquor ordeal ("Lion in the Desert").
+   Our script already knows the exact location - why not report it and save time?
+   ]
+
+*  Detailed cause: `field 2 requested line 7 has only 1 field`.
+   .errmsgexp[
+   Particularly important with in-house custom scripts:
+   These have many implicit assumptions or requirements that aren't alwys obvious
+   (e.g. values > 0, only upper-case A/C/G/T values, a key that
+   must already exist in another database, etc.).
+   Without this, the user is left to guess what the heck is wrong in the file.
+   ]
+
+*  Also recommended: Input file name
+   .errmsgexp[
+   if the program accepts filenames. Other input sources are also
+   useful, e.g. "database FOO table BAR record id 51341"
+   ]
+
+---
+
+topic: Error Handling
+
+# Fail Helpfully - sys.exit (1)
+
+As cool as this pythonic way is, it's very bad for useability:
+
+.footnote[Warning: sys.exit() used for illustrative purposes. It does not scale, see next slides]
+
+```python
+data = [x.strip().split() for x in open(args.filename).readlines()]
+```
+
+Prefer this:
+
+```python
+import sys
+
+program_name = sys.argv[0]
+
+*try:
+    f = open(filename,'r')
+
+    ## do something with file f (next slide) ##
+
+*except IOError as e:
+*     # This assumes no other I/O operations are active
+*     msg = "%s: failed to read input file: %s" % (program_name, str(e))
+*     sys.exit(msg)
+```
+
+```sh
+$ python errmsg1.py no-such-file.txt
+except1.py: failed to read input file: [Errno 2] No such file or directory: 'no-such-file.txt'
+```
+
+???
+
+**DO NOT OMIT THE ERROR CODE / REASON**
+(i.e. "errno 2: no such file or directory").
+
+While "no such file or directory" is the most common error,
+it is *not* the only error.
+
+Other common errors could be "permission denied",
+"disk full", "quota exceeded", "I/O error" - the reason
+is *critical* for the user to troubleshoot the problem.
+
+Imagine reporting a generic "failed to open file 1.txt",
+when the reason is that the python script tried to open it with read/write permissions
+and the current user does not have write permissions on the file -
+this will lead to unnecessary wasting time while trying to understand what went wrong. 
+
+
+---
+
+topic: Error Handling
+
+# Fail Helpfully  - sys.exit (2)
+
+.footnote[Warning: sys.exit() used for illustrative purposes. It does not scale, see next slides]
+
+Strict input validation:
+
+```python
+[ ... ]
+sums = defaultdict(int)
+try:
+    f = open(filename,'r')
+    for linenum,line in enumerate(f):
+*        msg_prefix = "%s: input error in '%s' line '%d': " % \
+*                     (program_name, filename, linenum+1)
+
+*        flds = line.strip().split()
+*        if len(flds)!=2:
+*            msg = msg_prefix+"expecting 2 fields, found %d field(s)" % len(flds)
+*            sys.exit(msg)
+
+         (user,value) = flds
+
+*        try:
+*            value = int(value)
+*        except ValueError:
+*            msg = msg_prefix+"invalid integer value '%s' in field 2" % (value)
+*            sys.exit(msg)
+        sums[user] += value
+except ...
+```
+
+???
+
+The code might look overly verbose and unpython-like.
+
+But indicating exactly what went wrong in the input will save
+the user precious time if there is an input error.
+
+It will also prevent down-stream python code from accidentially
+using invalid values and producing invalid results.
+
+**msg_prefix** will be a common prefix for all input errors
+relating to this line - create it once and re-use it.
+
+---
+
+topic: Error Handling
+
+# Fail Helpfully - Exceptions (1)
+
+Define custom class for user/usage/runtime errors:
+
+```python
+class MyError(RuntimeError):
+    """Base class for exceptions in this module."""
+    pass
+```
+
+
+```python
+def process_file(filename):
+    try:
+        f = open(filename,'r')
+
+        for linenum,line in enumerate(f):
+             [ ... ]
+
+
+
+
+
+
+
+    except IOError as e:
+        # Raise with filename, I/O error details
+*       raise MyError("failed to read file '%s': %s" % (filename, str(e)))
+
+```
+
+---
+
+topic: Error Handling
+
+#  Fail Helpfully - Exceptions (2)
+
+Define custom class for user/usage/runtime errors:
+
+```python
+class MyError(RuntimeError):
+    """Base class for exceptions in this module."""
+    pass
+```
+
+
+```python
+def process_file(filename):
+    try:
+        f = open(filename,'r')
+
+        for linenum,line in enumerate(f):
+            try:
+                flds = line.strip().split()
+                process_fields(flds)
+            except MyError as e:
+                # add the filename and propagate further
+*               raise MyError("input error in '%s' line %d: %s" \
+*                             % (filename, linenum+1, str(e)))
+
+    except IOError as e:
+        # Raise with filename, I/O error details
+        raise MyError("failed to read file '%s': %s" % (filename, str(e)))
+
+```
+
+---
+
+topic: Error Handling
+
+# Fail Helpfully - Exceptions (3)
+
+
+```python
+def process_fields(fields):
+    if len(fields)!=2:
+*       raise MyError("expecting 2 fields, found %d field(s)" % len(fields))
+
+    (user,value) = fields
+    try:
+        value = int(value)
+*    except ValueError:
+*       raise MyError("invalid integer value '%s' in field 2" % (value))
+
+    sums[user] += value
+```
+
+```python
+def process_file(filename):
+     [...]
+        for linenum,line in enumerate(f):
+            try:
+                flds = line.strip().split()
+                process_fields(flds)
+            except MyError as e:
+                # add the filename and propagate further
+*                raise MyError("input error in '%s' line %d: %s" \
+*                              % (filename, linenum+1, str(e)))
+```
+
+---
+
+topic: Error Handling
+
+# Fail Helpfully - Exceptions (4)
+
+```python
+def process_fields(fields):
+    if [ ... invalid input ... ]:
+*       raise MyError("... detailed error message ...")
+
+def process_file(filename):
+    [...]
+        process_fields(flds)
+    except MyError as e:
+        # add the filename and propagate further
+*       raise MyError("input error in '%s' line %d: %s" \
+*                     % (filename, linenum+1, str(e)))
+
+def main():
+    try:
+        # [... process command line arguments ...]
+        process_file(filename)
+        print_results()
+    except MyError as e:
+        # Prepend program name, print error and exit
+*       msg = sys.argv[0] + ":" + str(e)
+*       sys.exit(msg)
+```
+
+---
+
+topic: Error Handling
+
+# Fail Helpfully - Exceptions (5)
+
+```sh
+$ python2 except2.py input3.txt
+*except2.py:input error in 'input3.txt' line 7: expecting 2 fields, found 1 field
+```
+
+---
+
+topic:
+
+# Agenda
+
+.footnote[Advanced topic will be mention in passing, time permitting
+<br/>(otherwise we'll be here all night)]
+
+.agenda[
+- Parameter handling
+    - the *wrong* way (hard-coding, `sys.argv`)
+    - using `argparse`
+         - help screens
+         - boolean / int / string parameters
+         - required / default values
+         - multiple choices
+- Error handling
+    - useful vs. not-so-useful python error messages
+    - Unhelpful python errors
+    - Anatomy of a useful error message
+    - Failing Helpfully
+        - `sys.exit`
+        - custom exception class
+- Advanced topics
+    - parameters parsing:
+        - mutilple files; multiple values ; on/off features;
+	  version; configfile; sub commands;
+    - error handling:
+        - python I/O pitfalls; Exit codes, Standard Error, unix pipes; program name;
+
+]
+
+---
+
+topic: Parameter Handling (Advanced)
+
+# Accepting Multiple files
+
+.footnote[but consider using `xargs(1)` instead of writing code]
+
+Typical usage:
+
+```sh
+$ python argparse11.py A.TXT B.TXT C.TXT
+processing A.TXT
+processing B.TXT
+processing C.TXT
+
+or
+
+$ python argparse11.py *.TXT
+```
+
+
+Use `nargs="+"` to accept multiple values and store in a list:
+
+```python
+parser.add_argument('filename', metavar='FILE',
+*                    nargs='+',
+                     help='files to process')
+[ ... ]
+for f in args.filename:
+    print "processing",f
+```
+
+---
+
+topic: Parameter Handling (Advanced)
+
+# Accepting Multiple *optional* values
+
+.footnote[see next slide for important warning]
+
+Typical usage:
+
+```sh
+$ python argparss12.py --to me@example.com  --to foo@example.com
+Sending email to:  me@example.com, foo@example.com
+```
+
+
+Use `action=append` to accept option multiple times and collect
+the values into a list:
+
+```python
+ap.add_argument('-t', '--to',metavar="EMAIL",
+*                action="append",
+                 help="Send email to this recipient (multiple --to accepted)")
+[ ... ]
+print "Sending email to: ", ', '.join(args.to)
+```
+
+
+---
+
+topic: Parameter Handling (Advanced)
+
+# Acception Multiple *optional* values <br/> THE WRONG WAY
+
+**DO NOT** use `nargs` for optional arguments (starting with `-` or `--`).
+
+```python
+# BAD EXAMPLE - DO NOT USE
+ap.add_argument('-t', '--to',metavar="EMAIL", nargs="*",
+                 help="Send email to this recipient")
+[ ... ]
+print "Sending email to: ", ', '.join(args.to)
+```
+
+Usage:
+
+```sh
+# VERY BAD EXAMPLE - DO NOT USE
+$ python argparss13.py --to me@example.com foo@example.com
+Sending email to:  me@example.com, foo@example.com
+```
+
+This python abomination goes against decades of unix usage,
+is incompatible with other programming languages and should
+**NEVER** be used.
+
+
+`nargs` should only be used for positional arguments
+(like `filename` that are LAST on the command line).
+
+
+---
+
+topic: Parameter Handling (Advanced)
+
+# On/Off features
+
+A feature that can be enabled or disabled:
+
+```sh
+$ python argparse13.py --feature
+$ python argparse13.py --no-feature
+```
+
+
+Using same `dest` in two options will allow on/off type parameter:
+
+```python
+parser.add_argument('--feature', help="enable feature (default)",
+*                    dest='my_feature', action='store_true')
+parser.add_argument('--no-feature', help="disable feature"
+*                    dest='my_feature', action='store_false')
+parser.set_defaults(my_feature=True)
+[ ... ]
+
+if args.my_feature:
+    [ ... do something ... ]
+```
+
+---
+
+topic: Parameter Handling (Advanced)
+
+# Version (and license) Information
+
+Typical usage:
+
+```sh
+$ python argparse14.py --version
+Frobnicator  - version 0.1
+Copyright (C) 2017 Assaf Gordon <assafgordon@gmail.com>
+License: GPLv3-or-later
+```
+
+Add `version` parameter to `ArgumentParser` object:
+
+```python
+__version__ = 0.1
+
+version_info="""Frobnicator  - version %s
+Copyright (C) 2017 Assaf Gordon <assafgordon@gmail.com>
+License: GPLv3-or-later
+""" % (__version__)
+
+parser = ArgumentParser(description="My Frobnicator",
+     formatter_class=RawDescriptionHelpFormatter,
+*    version=version_info)
+```
+
+Keep the `version` string in a separate variable for easier updates.
+
+.smallfrom[Even better: automatically get version from git
+(require more complicated python packaging).]
+
+---
+
+topic: Parameter Handling (Advanced)
+
+# Configuration Files
+
+Typical (complex) Unix programs accept configuration from:
+1. command line arguments
+2. user configuration (e.g. `$HOME/.my_program_rc`)
+3. system default configuration (e.g. `/etc/my_program_rc`)
+
+(Command line values override user config, which overrides system config)
+
+The [ConfigArgParse](https://pypi.python.org/pypi/ConfigArgParse) package
+achieves exactly that:
+
+```python
+from configargparse import ArgParser
+
+p = ArgParser(default_config_files=['/etc/my_program_rc', '~/.my_program_rc'])
+p.add('--data-file', required=True, help='path to data file file')
+p.add('-v', help='verbose', action='store_true')
+```
+
+---
+
+topic: Parameter Handling (Advanced)
+
+# Sub-commands
+
+Typical complex programs:
+
+```sh
+git commit --message "first commit"
+ |   |      |
+ |   |      -> sub-command options
+ |   |
+ |   -> sub-command
+ |
+ -> Main program
+```
+
+Instructions at:<br/><https://docs.python.org/2/library/argparse.html#sub-commands>
+
+Minimal example: [argparse-subcommands.py](./snippets/argparse-subcommands.py); try:
+```sh
+$ python argparse-subcommands.py --help
+$ python argparse-subcommands.py commit --help
+$ python argparse-subcommands.py clone --help
+
+$ python argparse-subcommands.py commit -m "FOO"
+$ python argparse-subcommands.py clone git://foobar
+```
+
+---
+
+topic: Error Handling (Advanced)
+
+# Runtime reliability
+
+How reliable this code?
+
+```python
+print "Hello World"
+```
+
+Not so much in python 2!
+
+```sh
+$ python2 -c 'print "Hello World"' > /dev/full && echo ok || echo fail
+close failed in file object destructor:
+sys.excepthook is missing
+lost sys.stderr
+ok
+```
+
+slightly better in python 3:
+
+```sh
+$ python3 -c 'print("Hello World")' > /dev/full && echo ok || echo fail
+Exception ignored in: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='UTF-8'>
+OSError: [Errno 28] No space left on device
+fail
+```
+
+---
+
+topic: Error Handling (Advanced)
+
+# Runtime reliability (2)
+
+```python
+def foo():
+    f = open("/dev/full","w")
+    f.write("Hello World")
+```
+
+Not at all! (both python 2 and 3)
+
+Add explicit `f.close()` to detect I/O errors.
+
+---
+
+topic: Error Handling (Advanced)
+
+# Exit Codes
+
+.footnote[also relates to `set -e` and bash's `set -o pipefail`]
+
+Exit codes are fundemental in Unix.
+
+Successful termination should return exit code 0.
+
+Any error should result in non-zero exit code (e.g. `sys.exit("SOMETHING")`).
+
+The entire unix shell scripting language depends on it, e.g.:
+
+```sh
+my_program && something || something_else
+
+if my_program ; then
+  [ do one thing ]
+else
+  [ do soemthing else ]
+fi
+```
+
+While it is not noticeable for novices running scripts interactively,
+it because critical when integrating smaller scripts into larger pipelines.
+
+---
+
+topic: Error Handling (Advanced)
+
+# Standard Error (STDERR)
+
+* The unix standard error stream is typically reserved for error messages.
+
+* It is *tempting* to use it for informational messages or progress meters.
+
+* It's 'cool' when running programs interactively,
+  <br/>
+  but *highly* annoying as part of larger script or automated pipeline.
+
+* Even more annoying when outputting fancy colors or unicode characters to STDERR,
+  and the user redirected it to a file (for logging or troubleshooting).
+
+
+* Standard unix programs write *nothing* to stderr, unless an error occurs.
+  (also: if an error occurred an something was printed to STDERR, the program
+  terminates with non-zero exit code).
+
+* Strive to provide either `--verbose` option (and write nothing by default),
+  or a `--quiet` option (if you write something by default).
+
+---
+
+topic: Error Handling (Advanced)
+
+# Standard Error (STDERR) (2)
+
+For pretty progress bars with lots of options, consider the
+[tqdm](https://pypi.python.org/pypi/tqdm) package
+<br/>
+(but please remember to add --verbose/--quiet):
+
+```python
+from tqdm import tqdm
+import time
+
+for i in tqdm(range(15)):
+    time.sleep(1)
+```
+
+Try it interactively:
+
+```sh
+$ python progress-bar.py
+ 13%|█████████████▌           | 2/15 [00:02<00:13,  1.00s/it]
+```
+
+Then try with STDERR redirection:
+
+```sh
+$ python progress-bar.py 2>error.log
+$ cat error.log
+^M  0%|          | 0/15 [00:00<?, ?it/s]^M  7%|6         | 1/15 [00:01<00:
+14,  1.00s/it]^M 13%|#3        | 2/15 [00:02<00:13,  1.00s/it]^M^M 20%|##
+| 3/15 [00:03<00:12,  1.00s/it]^M 27%|##6       | 4/15 [00:04<00:11,  1.00
+s/it]^M 33%|###3
+```
+
+---
+
+topic: Error Handling (Advanced)
+
+# Unix Pipes
+
+Pipes are fundamental to unix:
+
+```sh
+$ seq 10000 | grep 9 | tail -n1
+9999
+
+$ seq 10000 | grep 9 | head -n2
+9
+19
+```
+
+Python does not play nice with pipes by default:
+
+```sh
+$ python -c "for i in range(10000): print i" | grep 9 | tail -n1
+9999
+
+$ python -c "for i in range(10000): print i" | grep 9 | head -n2
+9
+19
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+IOError: [Errno 32] Broken pipe
+```
+
+---
+
+topic: Error Handling (Advanced)
+
+# Why add the program's name ?
+
+When using complex shell commands or long shell scripts,
+known *which* program failed tremendously helps in troubleshooting.
+
+
+.footnote[*contrived example to find users using `bash` printed in descending UID order]
+
+consider the following *:
+```
+$ getent passwd | grep -w bash | cut -t: -f1,3 | sort -k2nr,2 -t: | tr -t : '\t'
+```
+
+Which error message is more helpful?
+
+`invalid option '-t'`
+
+or
+
+`cut: invalid option '-t'`
+
+
+Clearly showing the failing program becomes even more important when running long shell scripts,
+queuing jobs on a cluster (e.g. `qsub`), or running long-term pipelines.
+
+---
+
+topic: Error Handling (Advanced)
+
+# Loading file with other packages
+
+Several packages provide input loading, e.g.:
+
+* Python's [csv module](https://docs.python.org/2/library/csv.html)
+* NumPy's [loadtxt function](https://docs.scipy.org/doc/numpy-1.13.0/reference/generated/numpy.loadtxt.html)
+* Pandas [IO tools](http://pandas.pydata.org/pandas-docs/version/0.20/io.html)
+* Python's [struct module](https://docs.python.org/2/library/struct.html) (for binary data)
+
+While these make loading easier, the just shift the error handling
+elsewhere in your code (e.g. invalid values will be silently loaded as
+`NaN` or `None` or other placeholder values).
+
+Good input validation is still highly recommended, and valuable for the user.
+
+---
+
+topic:
+
+# Further Reading
+
+- `argparse`
+  - [Cookbook](https://mkaz.tech/code/python-argparse-cookbook/),
+    [Tutorial](https://docs.python.org/2/howto/argparse.html),
+  - Reference [python2](https://docs.python.org/2/howto/argparse.html),
+    [python3](https://docs.python.org/3/library/argparse.html)
+
+- More about [exception handling](https://crashcourse.housegordon.org/python-exceptions-handling-tips.html)
+
+- Using python's [Subprocess module](https://crashcourse.housegordon.org/python-subprocess.html)
+  <small>with emphasis on corrent error handling</small>
+
+- The [Unix Philosophy](https://en.wikipedia.org/wiki/Unix_philosophy)
+
+- [Goodbye World](https://www.gnu.org/ghm/2011/paris/slides/jim-meyering-goodbye-world.pdf) -
+  The perils of relying on output streams (written for C, relevant for Python)
+
+- [Code snippets](./snippets)
+
+---
+
+topic:
+class: center, middle
+
+That's all folks!
+
+Thank you for your time.
+
+Questions? Suggestions? Requests ? Automation tips?
+<br/>
+<assafgordon@gmail.com> or <https://twitter.com/agordonx>
+
+
+
+
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create({
+          slideNumberFormat: '',
+          highlightLines: true
+      });
+    </script>
+  </body>
+</html>
