@@ -94,15 +94,19 @@
                     {% endif %}
                     <!-- -->
                     {% if talk.slides_link %}
-                    <a href="{{ talk.slides_link }}">Slides</a>
+                    <a class="mr-2" href="{{ talk.slides_link }}">Slides</a>
                     {% endif %}
                     <!-- -->
                     {% if talk.code_link %}
-                    <a href="{{ talk.code_link }}">Code</a>
+                    <a class="mr-2" href="{{ talk.code_link }}">Code</a>
+                    {% endif %}
+                    <!-- -->
+                    {% if talk.blog_link %}
+                    <a class="mr-2" href="{{ talk.blog_link }}">Blog post</a>
                     {% endif %}
                     <!-- -->
                     {% if talk.video_link %}
-                    <a href="{{ talk.video_link }}">Video</a>
+                    <a class="mr-2" href="{{ talk.video_link }}">Video</a>
                     {% endif %}
                   </div>
                   {% endfor %}
