@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -eu
+
+DIR="$(dirname -- "${0}")/.."
+
+function run_in_pipenv() {
+    if [ -z "${PIPENV_ACTIVE:-}" ]; then
+        python3 -m pipenv run "${@}"
+    else
+        "${@}"
+    fi
+}
+
+run_in_pipenv bash -c '
+    exec mysql --defaults-file=<(echo "
+        [client]
+        host = ${MYSQL_HOST}
+        user = ${MYSQL_USER}
+        password = ${MYSQL_PASSWORD}
+        ") "${MYSQL_DATABASE}"
+'
