@@ -107,6 +107,9 @@ class Event(models.Model):
 
     history = HistoricalRecords()
 
+    class Meta:
+        ordering = ["-date"]
+
     def html_description(self):
         return sanitize_html(self.description)
 
@@ -146,7 +149,7 @@ class Presenter(models.Model):
         ordering = ["name"]
 
     def __str__(self):
-        return self.name
+        return f"{self.name}{' ' + self.last_name if self.last_name else ''}"
 
 
 class TalkArtifact(models.Model):
@@ -161,6 +164,13 @@ class Talk(models.Model):
         blank=True,
         help_text="""
             Talk description, in raw HTML format. It will be sanitized prior to display.
+        """,
+    )
+    order = models.FloatField(
+        null=True,
+        blank=True,
+        help_text="""
+            Can be used to change the order of talks in an event.
         """,
     )
 
@@ -184,6 +194,9 @@ class Talk(models.Model):
     event = models.ForeignKey(Event, on_delete=models.PROTECT)
 
     history = HistoricalRecords()
+
+    class Meta:
+        ordering = ["order", "id"]
 
     def html_description(self):
         return sanitize_html(self.description)

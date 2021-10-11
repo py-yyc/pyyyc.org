@@ -53,6 +53,13 @@
           <a class="hover-link ml-3" href='#{{ event.date|format:"%Y-%m-%d" }}'
             >link</a
           >
+          {% if request.user.is_staff %}
+          <a
+            class="hover-link bg-primary text-light ml-3"
+            href="{% url 'admin:pyyyc_event_change' event.id %}"
+            >edit</a
+          >
+          {% endif %}
         </h5>
         <h4>{{ event.name }}</h4>
         <div class="card">
