@@ -13,6 +13,7 @@ SAFE_TAGS_FOR_DESCRIPTIONS = [
     "i",
     "a",
     "img",
+    "pre",
     "h2",
     "h3",
     "h4",
