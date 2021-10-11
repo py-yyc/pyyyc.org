@@ -14,6 +14,7 @@ SAFE_TAGS_FOR_DESCRIPTIONS = [
     "a",
     "img",
     "pre",
+    "code",
     "ol",
     "ul",
     "li",
